@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     const orders = await get(collections.orders);
-    res.status(200).end(JSON.stringify(orders));
+    res.status(200).json(orders);
   }
 
   if (req.method === "POST") {
@@ -18,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       id: createdOrder.id,
     }
 
-    res.status(201).end(JSON.stringify(response));
+    res.status(201).json(response);
   }
 
   res.status(400).end('GET or POST allowed');
