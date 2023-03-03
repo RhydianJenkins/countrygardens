@@ -13,7 +13,6 @@ export default function Product({ name, price }: ProductProps) {
                 width: '256px',
                 minHeight: '256px',
                 padding: '16px',
-                backgroundColor: 'tertiary.main',
             }}
         >
             {name}
