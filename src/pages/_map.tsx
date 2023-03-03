@@ -1,16 +1,16 @@
 import React from 'react'
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { Box, CircularProgress } from '@mui/material';
 
-
-function MyComponent() {
+function Map() {
     const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
     })
 
     if (loadError) {
-        console.error(loadError)
-        return <div>Map cannot be loaded right now, sorry.</div>
+        console.error('Error loading Google Maps API');
+        return <></>;
     }
 
     const center = {
@@ -36,7 +36,16 @@ function MyComponent() {
         );
     }
 
-    return <></>;
+    return (
+        <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '1024px'
+        }}>
+            <CircularProgress />
+        </Box>
+    )
 }
 
-export default React.memo(MyComponent)
+export default React.memo(Map)
