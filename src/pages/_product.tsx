@@ -2,10 +2,10 @@ import { Paper } from '@mui/material';
 
 export interface ProductProps {
     name: string;
-    price: number;
+    value: number;
 }
 
-export default function Product({ name, price }: ProductProps) {
+export default function Product({ name, value }: ProductProps) {
     return (
         <Paper
             elevation={3}
@@ -15,7 +15,8 @@ export default function Product({ name, price }: ProductProps) {
                 padding: '16px',
             }}
         >
-            {name}
+            <p>Name: {name}</p>
+            <p>Value: {value}</p>
         </Paper>
     );
 }

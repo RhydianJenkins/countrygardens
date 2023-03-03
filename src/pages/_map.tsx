@@ -48,4 +48,4 @@ function Map() {
     )
 }
 
-export default React.memo(Map)
+export default React.memo(Map);

@@ -22,14 +22,21 @@ const getAppSingleton = (): FirebaseApp => {
 
 const db = getFirestore(getAppSingleton());
 
-type collectionType = "orders";
+type collectionType = "orders" | "products";
+
 export const collections: Record<collectionType, CollectionReference> = {
   orders: collection(db, "orders"),
+  products: collection(db, "products"),
 };
 
 export interface Order {
   value: number;
   timestamp: string;
+  name: string;
+}
+
+export interface Product {
+  value: number;
   name: string;
 }
 
@@ -41,6 +48,8 @@ export const get = async (collection: CollectionReference) => {
 
 export const post = async (collection: CollectionReference, newData: DocumentData) => {
   const res = await addDoc(collection, newData);
+
   console.log("Document written with ID: ", res.id);
+
   return res;
 };
