@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 
-export const Products = () => {
+export default function Products() {
   return (
     <Box sx={{
       width: '80vw',

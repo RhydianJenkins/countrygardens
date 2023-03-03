@@ -1,7 +1,7 @@
 import { Badge, Box } from '@mui/material';
 import { Facebook, Instagram, Twitter } from '@mui/icons-material';
 
-export const Footer = () => {
+export default function Footer() {
   return (
     <Box sx={{
       width: '80vw',

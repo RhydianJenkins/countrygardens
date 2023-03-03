@@ -15,7 +15,7 @@ function Info() {
     </Box>
   );
 }
-export const Cover = () => {
+export default function Cover() {
   return (
     <Box sx={{
       backgroundColor: 'primary.main',

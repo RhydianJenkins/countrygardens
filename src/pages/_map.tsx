@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 
-export const Map = () => {
+export default function Map() {
   return (
     <Box sx={{
       width: '100vw',
