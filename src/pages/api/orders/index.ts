@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(201).json(response);
   }
 
-  res.status(400).end('GET or POST allowed');
+  res.status(405).json({ error: 'GET or POST allowed' });
 }
 
 export default handler;

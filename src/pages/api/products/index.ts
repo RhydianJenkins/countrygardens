@@ -7,7 +7,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(200).json(orders);
   }
 
-  res.status(400).end('GET allowed');
+  res.status(405).json({ error: 'GET allowed' });
 }
 
 export default handler;

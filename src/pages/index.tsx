@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import Cover from "./_cover";
-import Map from "./_map";
-import Products from "./_products";
+import Cover from "@/components/cover";
+import Map from "@/components/map";
+import Products from "@/components/products";
 
 export default function Home() {
   return (

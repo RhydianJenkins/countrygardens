@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { Product as ProductEntity } from '@/database';
-import Product from './_product';
+import Product from './product';
 
 function Products() {
     const [products, setProducts] = React.useState<ProductEntity[]>([]);
@@ -19,7 +19,15 @@ function Products() {
     }, []);
 
     if (loading) {
-        return <h1>Loading...</h1>;
+        return (
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}>
+                <CircularProgress />
+            </Box>
+        )
     }
 
     if (error) {
