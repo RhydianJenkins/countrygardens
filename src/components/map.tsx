@@ -9,6 +9,7 @@ function Map() {
     })
 
     if (loadError) {
+        // eslint-disable-next-line no-console
         console.error('Error loading Google Maps API');
         return <></>;
     }
@@ -48,4 +49,4 @@ function Map() {
     )
 }
 
-export default React.memo(Map)
+export default React.memo(Map);
