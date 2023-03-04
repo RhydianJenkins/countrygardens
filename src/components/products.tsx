@@ -34,8 +34,6 @@ function Products() {
         return <h1>Something went wrong...</h1>;
     }
 
-    console.log(products);
-
     return (
         <Box sx={{
             width: '80vw',

@@ -4,12 +4,12 @@ import Map from "@/components/map";
 import Products from "@/components/products";
 
 export default function Home() {
-  return (
-    <Box sx={{
-    }}>
-      <Cover />
-      <Products />
-      <Map />
-    </Box>
-  );
+    return (
+        <Box sx={{
+        }}>
+            <Cover />
+            <Products />
+            <Map />
+        </Box>
+    );
 }

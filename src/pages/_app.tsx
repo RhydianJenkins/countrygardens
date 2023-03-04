@@ -6,11 +6,11 @@ import Footer from '@/components/footer';
 import Header from '@/components/header';
 
 export default function App({ Component, pageProps }: AppProps) {
-  return (
-    <ThemeProvider theme={theme}>
-      <Header />
-      <Component {...pageProps} />
-      <Footer />
-    </ThemeProvider>
-  )
+    return (
+        <ThemeProvider theme={theme}>
+            <Header />
+            <Component {...pageProps} />
+            <Footer />
+        </ThemeProvider>
+    )
 }
