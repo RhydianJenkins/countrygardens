@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { ShoppingBasket } from '@mui/icons-material';
 
-const pages = ['Products', 'About Us'];
+const pages = ['Shop', 'About Us'];
 const settings = ['Go to basket', 'Checkout'];
 
 function Header() {
@@ -28,9 +28,10 @@ function Header() {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = (pageNameClicked: string) => {
+    const handleCloseNavMenu = (pageNameClicked: string|null = null) => {
         setAnchorElNav(null);
-        const element = document.getElementById(pageNameClicked);
+
+        const element = pageNameClicked && document.getElementById(pageNameClicked);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
@@ -87,13 +88,16 @@ function Header() {
                                 horizontal: 'left',
                             }}
                             open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
+                            onClose={() => handleCloseNavMenu()}
                             sx={{
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem
+                                    key={page}
+                                    onClick={() => handleCloseNavMenu(page)}
+                                >
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}

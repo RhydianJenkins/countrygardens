@@ -21,9 +21,10 @@ function Products() {
     if (loading) {
         return (
             <Box sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                backgroundColor: 'secondary.main',
+                padding: '16px',
+                paddingTop: '128px',
+                textAlign: 'center',
             }}>
                 <CircularProgress />
             </Box>
@@ -35,14 +36,14 @@ function Products() {
     }
 
     return (
-        <section id='Products'>
+        <section id='Shop'>
             <Box sx={{
                 backgroundColor: 'secondary.main',
                 padding: '16px',
                 paddingTop: '128px',
                 textAlign: 'center',
             }}>
-                <h1>Products</h1>
+                <h2>Products</h2>
             </Box>
 
             <Box sx={{
