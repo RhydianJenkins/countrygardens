@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { ShoppingBasket } from '@mui/icons-material';
 
-const pages = ['Shop', 'About Us'];
+const pages = ['Shop', 'Contact Us'];
 const settings = ['Go to basket', 'Checkout'];
 
 function Header() {
@@ -25,8 +25,8 @@ function Header() {
         case 'Shop': {
             return 'shop';
         }
-        case 'About Us': {
-            return 'about-us';
+        case 'Contact Us': {
+            return 'contact-us';
         }
         default: {
             return '';

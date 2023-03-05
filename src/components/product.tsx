@@ -1,4 +1,4 @@
-import { Paper } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import { Product as ProductEntity } from '@/database';
 
 export default function Product({ name, value }: ProductEntity) {
@@ -6,13 +6,13 @@ export default function Product({ name, value }: ProductEntity) {
         <Paper
             elevation={3}
             sx={{
-                width: '256px',
-                minHeight: '256px',
-                padding: '16px',
+                width: '15em',
+                minHeight: '15em',
+                padding: '1em',
             }}
         >
-            <p>Name: {name}</p>
-            <p>Value: {value}</p>
+            <Typography>Name: {name}</Typography>
+            <Typography>Value: {value}</Typography>
         </Paper>
     );
 }

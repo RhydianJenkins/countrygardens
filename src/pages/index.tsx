@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import Cover from "@/components/cover";
 import Products from "@/components/products";
-import AboutUs from "@/components/AboutUs";
+import ContactUs from "@/components/ContactUs";
 
 export default function Home() {
     return (
@@ -9,7 +9,7 @@ export default function Home() {
         }}>
             <Cover />
             <Products />
-            <AboutUs />
+            <ContactUs />
         </Box>
     );
 }

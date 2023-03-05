@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { Product as ProductEntity } from '@/database';
 import Product from './product';
 
@@ -24,9 +24,9 @@ function ErrorComponent() {
                 padding: '1em',
             }}
         >
-            <h2>Whoops!</h2>
-            <p>Something went wrong while loading products.</p>
-            <p>Please check back again later, or contact us to purchase a basket.</p>
+            <Typography variant="subtitle1">Whoops!</Typography>
+            <Typography variant="body1">Something went wrong while loading products.</Typography>
+            <Typography variant="body1">Please check back again later, or contact us to purchase a basket.</Typography>
         </Box>
     )
 }
@@ -54,7 +54,7 @@ function Products() {
                 paddingTop: '10em',
                 textAlign: 'center',
             }}>
-                <h2>Products</h2>
+                <Typography variant="h3">Products</Typography>
             </Box>
 
             <Box sx={{

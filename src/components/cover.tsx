@@ -1,17 +1,17 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 function Info() {
     return (
         <Box sx={{
             backgroundColor: 'secondary.main',
-            width: '512px',
-            minHeight: '100px',
+            minWidth: '20em',
+            minHeight: '10em',
             position: 'relative',
             padding: '16px',
             textAlign: 'center',
         }}>
-            <h1>Country Gardens</h1>
-            <h2>Local Greengrocer</h2>
+            <Typography variant="h1" component="h1">Country Gardens</Typography>
+            <Typography variant="h2" component="h2">Greengrocer</Typography>
         </Box>
     );
 }
