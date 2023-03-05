@@ -3,21 +3,11 @@ import { Box, Typography } from '@mui/material';
 import { Product as ProductEntity } from '@/database';
 import Product from './product';
 
-export async function getStaticProps() {
-    const products = await fetch('/api/products').then((res) => res.json());
-
-    return {
-        props: {
-            products,
-        },
-    };
+export interface ProductsProps {
+    products?: ProductEntity[];
 }
 
-interface ProductsProps {
-    products: ProductEntity[];
-}
-
-function Products({ products = [] }: ProductsProps) {
+function Products({ products }: ProductsProps) {
     return (
         <section id='shop'>
             <Box sx={{
@@ -39,7 +29,7 @@ function Products({ products = [] }: ProductsProps) {
                 flexWrap: 'wrap',
                 justifyContent: 'center',
             }}>
-                {products?.length > 0
+                {products?.length
                     ? products.map((product, index) => <Product key={index} {...product} />)
                     : <Typography variant="caption">Nothing here at the moment. Check back later.</Typography>}
             </Box>
