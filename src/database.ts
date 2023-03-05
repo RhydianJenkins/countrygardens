@@ -18,7 +18,7 @@ const getAppSingleton = (): FirebaseApp => {
     }
 
     return app;
-}
+};
 
 const db = getFirestore(getAppSingleton());
 

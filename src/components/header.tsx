@@ -12,6 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { ShoppingBasket } from '@mui/icons-material';
+import { Badge } from '@mui/material';
 
 const pages = ['Shop', 'Contact Us'];
 const settings = ['Go to basket', 'Checkout'];
@@ -19,20 +20,15 @@ const settings = ['Go to basket', 'Checkout'];
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const basketCount = 0; // TODO
 
     const getElementId = (name: string): string => {
         switch(name) {
-        case 'Shop': {
-            return 'shop';
+        case 'Shop': { return 'shop'; }
+        case 'Contact Us': { return 'contact-us'; }
+        default: { return ''; }
         }
-        case 'Contact Us': {
-            return 'contact-us';
-        }
-        default: {
-            return '';
-        }
-        }
-    }
+    };
 
     const scrollToElement = (name: string) => {
         const elementId = getElementId(name);
@@ -41,7 +37,7 @@ function Header() {
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
-    }
+    };
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -156,7 +152,9 @@ function Header() {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Basket">
                             <IconButton onClick={handleOpenBasket} sx={{ p: 0 }}>
-                                <ShoppingBasket />
+                                <Badge color="secondary" badgeContent={basketCount}>
+                                    <ShoppingBasket />
+                                </Badge>
                             </IconButton>
                         </Tooltip>
                         <Menu

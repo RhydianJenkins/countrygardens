@@ -1,5 +1,5 @@
-import { Badge, Box } from '@mui/material';
-import { Facebook, Instagram, Twitter } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { Facebook } from '@mui/icons-material';
 
 export default function Footer() {
     return (
@@ -12,9 +12,9 @@ export default function Footer() {
             justifyContent: 'center',
             alignItems: 'center',
         }}>
-            <Badge><Facebook /></Badge>
-            <Badge><Instagram /></Badge>
-            <Badge><Twitter /></Badge>
+            <a href="https://www.facebook.com/CountryGardensSelsey" target="_blank">
+                <Facebook />
+            </a>
         </Box>
     );
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { Box, CircularProgress } from '@mui/material';
 
@@ -6,7 +6,7 @@ function Map() {
     const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    })
+    });
 
     if (loadError) {
         // eslint-disable-next-line no-console
@@ -46,7 +46,7 @@ function Map() {
         }}>
             <CircularProgress />
         </Box>
-    )
+    );
 }
 
 export default React.memo(Map);

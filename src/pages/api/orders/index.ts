@@ -16,12 +16,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const createdOrder = await post(collections.orders, newOrder);
         const response = {
             id: createdOrder.id,
-        }
+        };
 
         res.status(201).json(response);
     }
 
     res.status(405).json({ error: 'GET or POST allowed' });
-}
+};
 
 export default handler;

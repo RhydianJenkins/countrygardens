@@ -28,7 +28,7 @@ function ErrorComponent() {
             <Typography variant="body1">Something went wrong while loading products.</Typography>
             <Typography variant="body1">Please check back again later, or contact us to purchase a basket.</Typography>
         </Box>
-    )
+    );
 }
 
 function Products() {
