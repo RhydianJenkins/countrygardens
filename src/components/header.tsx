@@ -20,6 +20,29 @@ function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
+    const getElementId = (name: string): string => {
+        switch(name) {
+        case 'Shop': {
+            return 'shop';
+        }
+        case 'About Us': {
+            return 'about-us';
+        }
+        default: {
+            return '';
+        }
+        }
+    }
+
+    const scrollToElement = (name: string) => {
+        const elementId = getElementId(name);
+        const element = document.getElementById(elementId);
+
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -30,11 +53,7 @@ function Header() {
 
     const handleCloseNavMenu = (pageNameClicked: string|null = null) => {
         setAnchorElNav(null);
-
-        const element = pageNameClicked && document.getElementById(pageNameClicked);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+        pageNameClicked && scrollToElement(pageNameClicked);
     };
 
     const handleCloseUserMenu = () => {

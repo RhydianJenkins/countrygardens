@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 
 function AboutUs() {
     return (
-        <section id='About Us'>
+        <section id='about-us'>
             <Box
                 sx={{
                     backgroundColor: 'secondary.main',

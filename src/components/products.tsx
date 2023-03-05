@@ -47,7 +47,7 @@ function Products() {
     }, []);
 
     return (
-        <section id='Shop'>
+        <section id='shop'>
             <Box sx={{
                 backgroundColor: 'secondary.main',
                 padding: '1em',
