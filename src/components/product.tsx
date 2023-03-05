@@ -1,11 +1,7 @@
 import { Paper } from '@mui/material';
+import { Product as ProductEntity } from '@/database';
 
-export interface ProductProps {
-    name: string;
-    value: number;
-}
-
-export default function Product({ name, value }: ProductProps) {
+export default function Product({ name, value }: ProductEntity) {
     return (
         <Paper
             elevation={3}

@@ -1,23 +1,23 @@
-import { initializeApp, getApp, getApps, FirebaseApp } from "firebase/app";
+import { initializeApp, FirebaseApp } from "firebase/app";
 import { addDoc, collection, CollectionReference, DocumentData, getDocs, getFirestore } from "firebase/firestore";
 
-const getAppSingleton = (): FirebaseApp => {
-    const APP_NAME = "countrygardensapp";
+let app: FirebaseApp | null = null;
 
-    if (getApps().length > 0) {
-        return getApp(APP_NAME);
+const getAppSingleton = (): FirebaseApp => {
+    if (!app) {
+        app = initializeApp({
+            apiKey: process.env.FIREBASE_API_KEY,
+            authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+            appId: process.env.FIREBASE_APP_ID,
+            measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+            databaseURL: process.env.FIREBASE_DATABASE_URL,
+        }, "countrygardensapp");
     }
 
-    return initializeApp({
-        apiKey: process.env.FIREBASE_API_KEY,
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.FIREBASE_APP_ID,
-        measurementId: process.env.FIREBASE_MEASUREMENT_ID,
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
-    }, APP_NAME);
+    return app;
 }
 
 const db = getFirestore(getAppSingleton());

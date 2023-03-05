@@ -35,22 +35,34 @@ function Products() {
     }
 
     return (
-        <Box sx={{
-            width: '80vw',
-            backgroundColor: 'secondary.main',
-            margin: 'auto',
-            padding: '128px',
-            display: 'flex',
-            gap: '32px',
-        }}>
-            {products.map((product, index) =>
-                <Product
-                    key={index}
-                    name={product.name}
-                    value={product.value}
-                />
-            )}
-        </Box>
+        <section id='Products'>
+            <Box sx={{
+                backgroundColor: 'secondary.main',
+                padding: '16px',
+                paddingTop: '128px',
+                textAlign: 'center',
+            }}>
+                <h1>Products</h1>
+            </Box>
+
+            <Box sx={{
+                backgroundColor: 'secondary.main',
+                margin: 'auto',
+                gap: '16px',
+                padding: '16px',
+                paddingBottom: '128px',
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+            }}>
+                {products.map((product, index) =>
+                    <Product
+                        key={index}
+                        {...product}
+                    />
+                )}
+            </Box>
+        </section>
     );
 }
 
