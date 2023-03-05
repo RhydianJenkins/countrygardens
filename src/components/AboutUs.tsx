@@ -7,8 +7,8 @@ function AboutUs() {
             <Box
                 sx={{
                     backgroundColor: 'secondary.main',
-                    padding: '16px',
-                    paddingTop: '128px',
+                    padding: '1em',
+                    paddingTop: '10em',
                     textAlign: 'center',
                 }}
             >
@@ -19,14 +19,13 @@ function AboutUs() {
                 backgroundColor: 'secondary.main',
                 margin: 'auto',
                 gap: '16px',
-                padding: '16px',
-                paddingBottom: '128px',
+                padding: '1em',
+                paddingBottom: '1em',
                 display: 'flex',
                 flexWrap: 'wrap',
                 justifyContent: 'center',
             }}>
-                Opening times
-                Location
+                Opening times, etc?
             </Box>
 
             <Map />

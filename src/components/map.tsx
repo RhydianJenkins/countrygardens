@@ -24,7 +24,7 @@ function Map() {
             <GoogleMap
                 mapContainerStyle={{
                     width: '100%',
-                    height: '1024px',
+                    height: '30em',
                 }}
                 center={center}
                 zoom={17}
@@ -42,7 +42,7 @@ function Map() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '1024px'
+            height: '30em'
         }}>
             <CircularProgress />
         </Box>

@@ -3,6 +3,22 @@ import { Box, CircularProgress } from '@mui/material';
 import { Product as ProductEntity } from '@/database';
 import Product from './product';
 
+function ErrorComponent() {
+    return (
+        <Box
+            sx={{
+                color: 'white',
+                textAlign: 'center',
+                padding: '1em',
+            }}
+        >
+            <h2>Whoops!</h2>
+            <p>Something went wrong while loading products.</p>
+            <p>Please check back again later, or contact us to purchase a basket.</p>
+        </Box>
+    )
+}
+
 function Products() {
     const [products, setProducts] = React.useState<ProductEntity[]>([]);
     const [loading, setLoading] = React.useState(false);
@@ -22,8 +38,7 @@ function Products() {
         return (
             <Box sx={{
                 backgroundColor: 'secondary.main',
-                padding: '16px',
-                paddingTop: '128px',
+                padding: '5em',
                 textAlign: 'center',
             }}>
                 <CircularProgress />
@@ -31,16 +46,12 @@ function Products() {
         )
     }
 
-    if (error) {
-        return <h1>Something went wrong...</h1>;
-    }
-
     return (
         <section id='Shop'>
             <Box sx={{
                 backgroundColor: 'secondary.main',
-                padding: '16px',
-                paddingTop: '128px',
+                padding: '1em',
+                paddingTop: '10em',
                 textAlign: 'center',
             }}>
                 <h2>Products</h2>
@@ -50,13 +61,13 @@ function Products() {
                 backgroundColor: 'secondary.main',
                 margin: 'auto',
                 gap: '16px',
-                padding: '16px',
-                paddingBottom: '128px',
+                padding: '1em',
+                paddingBottom: '5em',
                 display: 'flex',
                 flexWrap: 'wrap',
                 justifyContent: 'center',
             }}>
-                {products.map((product, index) =>
+                {error ? <ErrorComponent /> : products.map((product, index) =>
                     <Product
                         key={index}
                         {...product}
