@@ -3,6 +3,18 @@ import { Box, CircularProgress } from '@mui/material';
 import { Product as ProductEntity } from '@/database';
 import Product from './product';
 
+function LoadingComponent() {
+    return (
+        <Box sx={{
+            backgroundColor: 'secondary.main',
+            padding: '5em',
+            textAlign: 'center',
+        }}>
+            <CircularProgress />
+        </Box>
+    );
+}
+
 function ErrorComponent() {
     return (
         <Box
@@ -34,18 +46,6 @@ function Products() {
             .finally(() => setLoading(false));
     }, []);
 
-    if (loading) {
-        return (
-            <Box sx={{
-                backgroundColor: 'secondary.main',
-                padding: '5em',
-                textAlign: 'center',
-            }}>
-                <CircularProgress />
-            </Box>
-        )
-    }
-
     return (
         <section id='Shop'>
             <Box sx={{
@@ -67,6 +67,7 @@ function Products() {
                 flexWrap: 'wrap',
                 justifyContent: 'center',
             }}>
+                {loading && <LoadingComponent />}
                 {error ? <ErrorComponent /> : products.map((product, index) =>
                     <Product
                         key={index}
