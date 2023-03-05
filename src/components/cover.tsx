@@ -3,7 +3,6 @@ import { Box, Typography } from '@mui/material';
 function Info() {
     return (
         <Box sx={{
-            backgroundColor: 'secondary.main',
             minWidth: '20em',
             minHeight: '10em',
             position: 'relative',
@@ -20,7 +19,7 @@ export default function Cover() {
         <Box sx={{
             backgroundColor: 'primary.main',
             width: '100vw',
-            minHeight: '1024px',
+            minHeight: '40em',
             maxHeight: '80vh',
             spacing: 0,
             justify: 'space-around',

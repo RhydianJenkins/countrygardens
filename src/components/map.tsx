@@ -42,7 +42,7 @@ function Map() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '30em'
+            height: '30em',
         }}>
             <CircularProgress />
         </Box>

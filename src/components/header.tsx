@@ -21,6 +21,12 @@ function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const basketCount = 0; // TODO
+    const [scrollPosition, setScrollPosition] = React.useState(0);
+
+    const handleScroll = () => {
+        const position = window.pageYOffset;
+        setScrollPosition(position);
+    };
 
     const getElementId = (name: string): string => {
         switch(name) {
@@ -56,8 +62,16 @@ function Header() {
         setAnchorElUser(null);
     };
 
+    React.useEffect(() => {
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
-        <AppBar position="static">
+        <AppBar elevation={scrollPosition > 0 ? 1 : 0} position="fixed">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
