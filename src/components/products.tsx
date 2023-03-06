@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { Product as ProductEntity } from '@/database';
 import Product from './product';
+import { ProductEntity } from '@/pages/api/products';
 
 export interface ProductsProps {
     products?: ProductEntity[];

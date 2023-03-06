@@ -2,13 +2,8 @@ import Cover from "@/components/cover";
 import Products, { ProductsProps } from "@/components/products";
 import ContactUs from "@/components/contactUs";
 import { GetServerSideProps } from "next";
-import { Product } from "@/database";
 
-type Props = {
-    products: Product[],
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
+export const getServerSideProps: GetServerSideProps<ProductsProps> = async () => {
     const defaultBaseUrl = 'http://localhost:3000';
     const url = `${process.env.BASE_FETCH_URL || defaultBaseUrl}/api/products`;
     const res = await fetch(url);
