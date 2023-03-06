@@ -1,8 +1,7 @@
 import Cover from "@/components/cover";
 import Products from "@/components/products";
 import ContactUs from "@/components/contactUs";
-import { getProducts } from "@/database";
-import { ProductEntity } from "./api/products";
+import { getProducts, ProductEntity } from "./api/products";
 
 export const getStaticProps = async () => {
     const products = await getProducts();

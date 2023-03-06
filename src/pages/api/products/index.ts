@@ -1,10 +1,28 @@
-import { getProducts } from "@/database";
+import { getPocketBase } from "@/database";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export interface ProductEntity {
     name: string;
     value: number;
 }
+
+export const getProducts = async (): Promise<ProductEntity[]> => {
+    const pb = getPocketBase();
+
+    try {
+        const response = await pb
+            .collection('products')
+            .getFullList({ sort: '-created' });
+
+        const products = response.map(({ name, value }) => ({ name, value }));
+        return products;
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+    }
+
+    return [];
+};
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
