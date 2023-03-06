@@ -1,3 +1,4 @@
+import { getPocketBase } from "@/database";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export interface ProductEntity {
@@ -6,13 +7,21 @@ export interface ProductEntity {
 }
 
 export const getProducts = async (): Promise<ProductEntity[]> => {
-    // TODO fetch(env.POCKETBASE_URL/LOCALHOST/api/products)...
-    const products = [
-        { name: "Product 1", value: 69 },
-        { name: "Product 2", value: 420 },
-    ] as ProductEntity[];
+    const pb = getPocketBase();
 
-    return products;
+    try {
+        const response = await pb
+            .collection('products')
+            .getFullList({ sort: '-created' });
+
+        const products = response.map(({ name, value }) => ({ name, value }));
+        return products;
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+    }
+
+    return [];
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
