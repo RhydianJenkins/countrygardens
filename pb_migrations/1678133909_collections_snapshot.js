@@ -3,7 +3,7 @@ migrate((db) => {
     {
       "id": "_pb_users_auth_",
       "created": "2023-03-06 19:20:30.842Z",
-      "updated": "2023-03-06 19:20:30.843Z",
+      "updated": "2023-03-06 20:11:44.657Z",
       "name": "users",
       "type": "auth",
       "system": false,
@@ -61,7 +61,7 @@ migrate((db) => {
     {
       "id": "s5d4pdgl666trvq",
       "created": "2023-03-06 19:32:12.108Z",
-      "updated": "2023-03-06 19:32:12.108Z",
+      "updated": "2023-03-06 20:18:09.593Z",
       "name": "products",
       "type": "base",
       "system": false,
@@ -92,7 +92,7 @@ migrate((db) => {
           }
         }
       ],
-      "listRule": null,
+      "listRule": "",
       "viewRule": null,
       "createRule": null,
       "updateRule": null,
