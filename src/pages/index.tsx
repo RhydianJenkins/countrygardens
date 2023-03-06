@@ -17,7 +17,7 @@ function Home({ products }: ProductsProps) {
     return (
         <>
             <Cover />
-            <Products />
+            <Products products={[]}/>
             <ContactUs />
         </>
     );
