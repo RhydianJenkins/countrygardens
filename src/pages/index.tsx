@@ -2,15 +2,10 @@ import Cover from "@/components/cover";
 import Products, { ProductsProps } from "@/components/products";
 import ContactUs from "@/components/contactUs";
 import { GetServerSideProps } from "next";
+import { getProducts } from "./api/products";
 
 export const getServerSideProps: GetServerSideProps<ProductsProps> = async () => {
-    const url = 'http://localhost:3000/api/products';
-    const res = await fetch(url);
-    const products = await res.json();
-
-    if (!res.ok) {
-        throw new Error(`Failed to prefetch products, received status ${res.status}`);
-    }
+    const products = await getProducts();
 
     return {
         props: { products },
