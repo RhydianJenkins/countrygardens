@@ -1,10 +1,12 @@
 import Cover from "@/components/cover";
 import Products, { ProductsProps } from "@/components/products";
 import ContactUs from "@/components/contactUs";
-import { getProducts } from "./api/products";
 
 export async function getServerSideProps() {
-    const products = await getProducts();
+    const products = [
+        { name: "Product 1", value: 69 },
+        { name: "Product 2", value: 420 },
+    ];
 
     return {
         props: { products },
@@ -15,7 +17,7 @@ function Home({ products }: ProductsProps) {
     return (
         <>
             <Cover />
-            <Products products={products} />
+            <Products />
             <ContactUs />
         </>
     );
