@@ -1,5 +1,5 @@
+import { ProductEntity } from '@/pages/api/products';
 import { Paper, Typography } from '@mui/material';
-import { Product as ProductEntity } from '@/database';
 
 export default function Product({ name, value }: ProductEntity) {
     return (

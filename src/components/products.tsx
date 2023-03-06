@@ -1,51 +1,13 @@
 import React from 'react';
-import { Box, CircularProgress, Typography } from '@mui/material';
-import { Product as ProductEntity } from '@/database';
+import { Box, Typography } from '@mui/material';
 import Product from './product';
+import { ProductEntity } from '@/pages/api/products';
 
-function LoadingComponent() {
-    return (
-        <Box sx={{
-            backgroundColor: 'secondary.main',
-            padding: '5em',
-            textAlign: 'center',
-        }}>
-            <CircularProgress />
-        </Box>
-    );
+export interface ProductsProps {
+    products: ProductEntity[];
 }
 
-function ErrorComponent() {
-    return (
-        <Box
-            sx={{
-                color: 'white',
-                textAlign: 'center',
-                padding: '1em',
-            }}
-        >
-            <Typography variant="subtitle1">Whoops!</Typography>
-            <Typography variant="body1">Something went wrong while loading products.</Typography>
-            <Typography variant="body1">Please check back again later, or contact us to purchase a basket.</Typography>
-        </Box>
-    );
-}
-
-function Products() {
-    const [products, setProducts] = React.useState<ProductEntity[]>([]);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState(false);
-
-    React.useMemo(() => {
-        setLoading(true);
-
-        fetch('/api/products')
-            .then((res) => res.json())
-            .then((products) => setProducts(products))
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
-    }, []);
-
+function Products({ products }: ProductsProps) {
     return (
         <section id='shop'>
             <Box sx={{
@@ -67,13 +29,9 @@ function Products() {
                 flexWrap: 'wrap',
                 justifyContent: 'center',
             }}>
-                {loading && <LoadingComponent />}
-                {error ? <ErrorComponent /> : products.map((product, index) =>
-                    <Product
-                        key={index}
-                        {...product}
-                    />
-                )}
+                {products?.length
+                    ? products.map((product, index) => <Product key={index} {...product} />)
+                    : <Typography variant="caption">Nothing here at the moment. Check back later.</Typography>}
             </Box>
         </section>
     );
