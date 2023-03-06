@@ -4,8 +4,7 @@ import ContactUs from "@/components/contactUs";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps<ProductsProps> = async () => {
-    const defaultBaseUrl = 'http://localhost:3000';
-    const url = `${process.env.BASE_FETCH_URL || defaultBaseUrl}/api/products`;
+    const url = 'http://localhost:3000/api/products';
     const res = await fetch(url);
     const products = await res.json();
 
