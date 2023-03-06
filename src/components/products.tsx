@@ -4,7 +4,7 @@ import Product from './product';
 import { ProductEntity } from '@/pages/api/products';
 
 export interface ProductsProps {
-    products?: ProductEntity[];
+    products: ProductEntity[];
 }
 
 function Products({ products }: ProductsProps) {
