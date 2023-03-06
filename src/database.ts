@@ -11,11 +11,17 @@ if (!process.env.POCKETBASE_API_ADDRESS) {
 const pb = new PocketBase(process.env.POCKETBASE_API_ADDRESS || defaultAddress);
 
 export const getProducts = async (): Promise<ProductEntity[]> => {
-    const response = await pb
-        .collection('products')
-        .getFullList({ sort: '-created' });
+    try {
+        const response = await pb
+            .collection('products')
+            .getFullList({ sort: '-created' });
 
-    const products = response.map(({ name, value }) => ({ name, value }));
+        const products = response.map(({ name, value }) => ({ name, value }));
+        return products;
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+    }
 
-    return products;
+    return [];
 };
