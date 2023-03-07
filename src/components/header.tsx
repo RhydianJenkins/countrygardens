@@ -11,17 +11,17 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import NextLink from 'next/link';
 import { ShoppingBasket } from '@mui/icons-material';
 import { Badge } from '@mui/material';
 
 const pages = ['Shop', 'Contact Us'];
-const settings = ['Go to basket', 'Checkout'];
 
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const basketCount = 0; // TODO
     const [scrollPosition, setScrollPosition] = React.useState(0);
+
+    const basketCount = 0; // TODO get from sessionStorage, reactively. Time for REDUX? :(
 
     const handleScroll = () => {
         const position = window.pageYOffset;
@@ -49,17 +49,14 @@ function Header() {
         setAnchorElNav(event.currentTarget);
     };
 
-    const handleOpenBasket = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
+    const handleOpenBasket = () => {
+        // eslint-disable-next-line no-console
+        console.log('TODO navigate to basket');
     };
 
     const handleCloseNavMenu = (pageNameClicked: string|null = null) => {
         setAnchorElNav(null);
         pageNameClicked && scrollToElement(pageNameClicked);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
     };
 
     React.useEffect(() => {
@@ -164,35 +161,15 @@ function Header() {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Basket">
-                            <IconButton onClick={handleOpenBasket} sx={{ p: 0 }}>
-                                <Badge color="secondary" badgeContent={basketCount}>
-                                    <ShoppingBasket />
-                                </Badge>
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                        <NextLink href='/basket'>
+                            <Tooltip title="Go to Basket">
+                                <IconButton onClick={handleOpenBasket} sx={{ p: 0 }}>
+                                    <Badge color="secondary" badgeContent={basketCount}>
+                                        <ShoppingBasket />
+                                    </Badge>
+                                </IconButton>
+                            </Tooltip>
+                        </NextLink>
                     </Box>
                 </Toolbar>
             </Container>
