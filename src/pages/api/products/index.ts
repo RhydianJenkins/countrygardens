@@ -2,6 +2,7 @@ import { getPocketBase } from "@/database";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export interface ProductEntity {
+    id: string;
     name: string;
     value: number;
 }
@@ -14,7 +15,7 @@ export const getProducts = async (): Promise<ProductEntity[]> => {
             .collection('products')
             .getFullList({ sort: '-created' });
 
-        const products = response.map(({ name, value }) => ({ name, value }));
+        const products = response.map(({ id, name, value }) => ({ id, name, value }));
         return products;
     } catch (error) {
         // eslint-disable-next-line no-console

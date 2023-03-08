@@ -7,13 +7,15 @@ This is an ecommerce site for Country Gardens.
 Rename `.env.example` to `.env` and fill in the parameters.
 
 ```bash
+pocketbase serve # start the database server
+npm i # install dependencies
 npm run dev # start the front end server
-pocketbase migrate && pocketbase serve # start the database server
 ```
+Go to `http://127.0.0.1:8090/_/` and set up your admin account for the database. You will only need to do this once.
 
 You should then be able to go to `http://localhost:3000` and see the home page.
 
-## Database management
+## Database Setup
 
 I followed [these instructions](https://github.com/pocketbase/pocketbase/discussions/537) to set up my fly.io/pocketbase instance.
 
