@@ -1,5 +1,3 @@
-'use client';
-
 import { Badge, IconButton } from '@mui/material';
 import { ShoppingBasket } from '@mui/icons-material';
 import React from 'react';
@@ -17,9 +15,11 @@ function BasketIcon() {
     };
 
     React.useEffect(() => {
+        // TODO this isn't updating after initial page load
+        // newCount is correct, but doesn't update
         const newCount = Object.keys({ ...basket }).reduce((acc, key) => acc + basket[key], 0);
         setBasketCount(newCount);
-    }, [Object.values(basket)]);
+    }, [basket]);
 
     return (
         <NextLink href='/basket'>
