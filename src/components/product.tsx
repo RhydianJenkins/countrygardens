@@ -3,7 +3,8 @@ import { Link as MuiLink, Alert, Box, Button, Paper, Snackbar, Typography } from
 import NextLink from 'next/link';
 import React from 'react';
 import Image from 'next/image';
-import useBasket from '@/hooks/useBasket';
+import { BasketContext } from '@/pages/_app';
+import { BasketReturnType } from '@/hooks/useBasket';
 
 const formatter = new Intl.NumberFormat('en-EU', {
     style: 'currency',
@@ -11,9 +12,9 @@ const formatter = new Intl.NumberFormat('en-EU', {
 });
 
 export default function Product({ id, name, value }: ProductEntity) {
+    const { addBasketItem } = React.useContext(BasketContext);
     const [open, setOpen] = React.useState(false);
     const [lastAddedProduct, setLastAddedProduct] = React.useState('');
-    const [, addBasketItem] = useBasket();
 
     const priceString = formatter.format(value / 100);
 

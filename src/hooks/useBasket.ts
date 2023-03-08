@@ -1,14 +1,12 @@
 import React from "react";
 
-type Basket = Record<string, number>;
-type BasketReturnType = [
-    Basket,
-    (id: string) => void,
-    (id: string, number?: number) => void
-];
+export type BasketType = Record<string, number>;
+export type AddBasketItemType = (id: string) => void;
+export type RemoveBasketItemType = (id: string, number?: number) => void;
+type BasketReturnType = [ BasketType, AddBasketItemType, RemoveBasketItemType ];
 
 function useBasket(): BasketReturnType {
-    const [basket, setBasket] = React.useState<Basket>(() => {
+    const [basket, setBasket] = React.useState<BasketType>(() => {
         if (typeof window !== 'undefined') {
             try {
                 const basketString = window.localStorage.getItem('basket') || '{}';

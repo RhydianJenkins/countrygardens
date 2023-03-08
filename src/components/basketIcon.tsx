@@ -2,11 +2,11 @@ import { Badge } from '@mui/material';
 import { ShoppingBasket } from '@mui/icons-material';
 import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
-import useBasket from '@/hooks/useBasket';
 import NextLink from 'next/link';
+import { BasketContext } from '@/pages/_app';
 
 const BasketIcon = () => {
-    const [basket] = useBasket();
+    const { basket } = React.useContext(BasketContext);
     const [basketCount, setBasketCount] = React.useState(0);
 
     React.useEffect(() => {
