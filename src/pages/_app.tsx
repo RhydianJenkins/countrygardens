@@ -5,25 +5,14 @@ import { ThemeProvider } from '@mui/material/styles';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import React from 'react';
-import useBasket, { AddBasketItemType, BasketType, RemoveBasketItemType } from '@/hooks/useBasket';
-
-type BasketContextType = {
-    basket: BasketType,
-    addBasketItem: AddBasketItemType,
-    removeBasketItem: RemoveBasketItemType
-}
-export const BasketContext = React.createContext<BasketContextType|null>(null);
+import useBasket, { BasketContext } from '@/hooks/useBasket';
 
 export default function App({ Component, pageProps }: AppProps) {
     const [basket, addBasketItem, removeBasketItem] = useBasket();
 
     return (
         <ThemeProvider theme={theme}>
-            <BasketContext.Provider value={{
-                basket,
-                addBasketItem,
-                removeBasketItem,
-            }}>
+            <BasketContext.Provider value={{ basket, addBasketItem, removeBasketItem }}>
                 <Header />
                 <Component {...pageProps} />
                 <Footer />

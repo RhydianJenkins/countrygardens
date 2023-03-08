@@ -3,7 +3,7 @@ import { ShoppingBasket } from '@mui/icons-material';
 import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import NextLink from 'next/link';
-import { BasketContext } from '@/pages/_app';
+import { BasketContext } from '@/hooks/useBasket';
 
 const BasketIcon = () => {
     const { basket } = React.useContext(BasketContext);

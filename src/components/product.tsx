@@ -3,8 +3,7 @@ import { Link as MuiLink, Alert, Box, Button, Paper, Snackbar, Typography } from
 import NextLink from 'next/link';
 import React from 'react';
 import Image from 'next/image';
-import { BasketContext } from '@/pages/_app';
-import { BasketReturnType } from '@/hooks/useBasket';
+import { BasketContext } from '@/hooks/useBasket';
 
 const formatter = new Intl.NumberFormat('en-EU', {
     style: 'currency',

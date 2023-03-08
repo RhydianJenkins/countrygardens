@@ -5,6 +5,24 @@ export type AddBasketItemType = (id: string) => void;
 export type RemoveBasketItemType = (id: string, number?: number) => void;
 type BasketReturnType = [ BasketType, AddBasketItemType, RemoveBasketItemType ];
 
+type BasketContextType = {
+    basket: BasketType,
+    addBasketItem: AddBasketItemType,
+    removeBasketItem: RemoveBasketItemType
+}
+
+export const BasketContext = React.createContext<BasketContextType>({
+    basket: {},
+    addBasketItem: () => {
+        // eslint-disable-next-line no-console
+        console.error('addBasketItem not set');
+    },
+    removeBasketItem: () => {
+        // eslint-disable-next-line no-console
+        console.error('removeBasketItem not set');
+    },
+});
+
 function useBasket(): BasketReturnType {
     const [basket, setBasket] = React.useState<BasketType>(() => {
         if (typeof window !== 'undefined') {
