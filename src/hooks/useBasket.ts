@@ -1,6 +1,13 @@
 import React from "react";
 
-function useBasket() {
+type Basket = Record<string, number>;
+type BasketReturnType = [
+    Basket,
+    (id: string) => void,
+    (id: string, number?: number) => void
+];
+
+function useBasket(): BasketReturnType {
     const [basket, setBasket] = React.useState(() => {
         if (typeof window === "undefined") {
             return {};
