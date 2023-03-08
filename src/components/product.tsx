@@ -3,6 +3,7 @@ import { Link as MuiLink, Alert, Box, Button, Paper, Snackbar, Typography } from
 import NextLink from 'next/link';
 import React from 'react';
 import Image from 'next/image';
+import useBasket from '@/hooks/useBasket';
 
 const formatter = new Intl.NumberFormat('en-EU', {
     style: 'currency',
@@ -11,20 +12,15 @@ const formatter = new Intl.NumberFormat('en-EU', {
 
 export default function Product({ id, name, value }: ProductEntity) {
     const [open, setOpen] = React.useState(false);
-    const [lastAddedProductId, setLastAddedProductId] = React.useState('');
+    const [lastAddedProduct, setLastAddedProduct] = React.useState('');
+    const [, addBasketItem] = useBasket();
 
     const priceString = formatter.format(value / 100);
 
-    const addProductToCart = (id: string) => {
-        const basketString = window.localStorage.getItem('basket') || '{}';
-        const basket = JSON.parse(basketString);
-
-        basket[id] = basket[id] ? basket[id] + 1 : 1;
-
+    const addProductToCart = ({ id, name }: { id: string, name: string }) => {
+        setLastAddedProduct(name);
+        addBasketItem(id);
         setOpen(true);
-        setLastAddedProductId(id);
-
-        window.localStorage.setItem('basket', JSON.stringify(basket));
     };
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
@@ -38,7 +34,7 @@ export default function Product({ id, name, value }: ProductEntity) {
     return (
         <>
             <Snackbar
-                key={lastAddedProductId}
+                key={lastAddedProduct}
                 open={open}
                 onClose={handleClose}
                 autoHideDuration={6000}
@@ -47,7 +43,7 @@ export default function Product({ id, name, value }: ProductEntity) {
                     onClose={handleClose}
                     severity="success"
                 >
-                    {'Item added to basket. '}
+                    {`${lastAddedProduct} added to basket. `}
                     <NextLink href='/basket'>
                         <MuiLink component='span' underline='hover'>View basket</MuiLink>
                     </NextLink>
@@ -95,7 +91,7 @@ export default function Product({ id, name, value }: ProductEntity) {
                         sx={{
                             size: 'small',
                         }}
-                        onClick={() => addProductToCart(id)}
+                        onClick={() => addProductToCart({ id, name })}
                     >
                         Add to cart
                     </Button>

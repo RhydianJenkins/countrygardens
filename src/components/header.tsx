@@ -8,20 +8,16 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import NextLink from 'next/link';
-import { ShoppingBasket } from '@mui/icons-material';
-import { Badge } from '@mui/material';
+import BasketIcon from './basketIcon';
 
 const pages = ['Shop', 'Contact Us'];
 
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [scrollPosition, setScrollPosition] = React.useState(0);
-
-    const basketCount = 0; // TODO get from localStorage, reactively. Time for REDUX? :(
 
     const handleScroll = () => {
         const position = window.pageYOffset;
@@ -47,11 +43,6 @@ function Header() {
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
-    };
-
-    const handleOpenBasket = () => {
-        // eslint-disable-next-line no-console
-        console.log('TODO navigate to basket');
     };
 
     const handleCloseNavMenu = (pageNameClicked: string|null = null) => {
@@ -159,15 +150,7 @@ function Header() {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <NextLink href='/basket'>
-                            <Tooltip title="Go to Basket">
-                                <IconButton onClick={handleOpenBasket} sx={{ p: 0 }}>
-                                    <Badge color="secondary" badgeContent={basketCount}>
-                                        <ShoppingBasket />
-                                    </Badge>
-                                </IconButton>
-                            </Tooltip>
-                        </NextLink>
+                        <BasketIcon />
                     </Box>
                 </Toolbar>
             </Container>
