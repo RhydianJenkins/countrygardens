@@ -1,5 +1,3 @@
-'use client';
-
 import { BasketContext } from "@/hooks/useBasket";
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
 import {
