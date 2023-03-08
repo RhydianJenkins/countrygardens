@@ -21,7 +21,7 @@ function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [scrollPosition, setScrollPosition] = React.useState(0);
 
-    const basketCount = 0; // TODO get from sessionStorage, reactively. Time for REDUX? :(
+    const basketCount = 0; // TODO get from localStorage, reactively. Time for REDUX? :(
 
     const handleScroll = () => {
         const position = window.pageYOffset;
@@ -86,7 +86,7 @@ function Header() {
                                 textDecoration: 'none',
                             }}
                         >
-                            LOGO
+                            Country Gardens
                         </Typography>
                     </NextLink>
 
@@ -133,8 +133,6 @@ function Header() {
                     <Typography
                         variant="h5"
                         noWrap
-                        component="a"
-                        href=""
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -146,7 +144,7 @@ function Header() {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        <NextLink href='/'>Country Gardens</NextLink>
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (

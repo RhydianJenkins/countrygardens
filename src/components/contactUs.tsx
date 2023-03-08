@@ -20,10 +20,8 @@ function ContactUs() {
             <Box
                 sx={{
                     backgroundColor: 'secondary.main',
-                    width: '60vw',
                     padding: '1em',
                     textAlign: 'center',
-                    margin: 'auto',
                 }}
             >
                 <Grid container spacing={2}>

@@ -16,7 +16,7 @@ export default function Product({ id, name, value }: ProductEntity) {
     const priceString = formatter.format(value / 100);
 
     const addProductToCart = (id: string) => {
-        const basketString = window.sessionStorage.getItem('basket') || '{}';
+        const basketString = window.localStorage.getItem('basket') || '{}';
         const basket = JSON.parse(basketString);
 
         basket[id] = basket[id] ? basket[id] + 1 : 1;
@@ -24,7 +24,7 @@ export default function Product({ id, name, value }: ProductEntity) {
         setOpen(true);
         setLastAddedProductId(id);
 
-        window.sessionStorage.setItem('basket', JSON.stringify(basket));
+        window.localStorage.setItem('basket', JSON.stringify(basket));
     };
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
