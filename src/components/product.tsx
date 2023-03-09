@@ -58,13 +58,13 @@ export default function Product({ id, name, value, imageUrl }: ProductEntity) {
                     width: '20em',
                     display: 'flex',
                     flexDirection: 'column',
+                    height: '100%',
                 }}
             >
                 {imageUrl && <Box
                     sx={{
                         flexGrow: 1,
                         height: '20em',
-                        borderRadius: '5px 5px 0 0',
                         overflow: 'hidden',
                         position: 'relative',
                     }}
