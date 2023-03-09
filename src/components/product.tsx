@@ -14,6 +14,7 @@ export default function Product({ id, name, value }: ProductEntity) {
     const { addBasketItem } = React.useContext(BasketContext);
     const [open, setOpen] = React.useState(false);
     const [lastAddedProduct, setLastAddedProduct] = React.useState('');
+    const [addedToCart, setAddedToCart] = React.useState(false);
 
     const priceString = formatter.format(value / 100);
 
@@ -21,6 +22,7 @@ export default function Product({ id, name, value }: ProductEntity) {
         setLastAddedProduct(name);
         addBasketItem(id);
         setOpen(true);
+        setAddedToCart(true);
     };
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
@@ -84,18 +86,19 @@ export default function Product({ id, name, value }: ProductEntity) {
                     }}
                 >
                     <span>
-                        <Typography>Name: {name}</Typography>
+                        <Typography>{name}</Typography>
                         <Typography>{priceString}</Typography>
                     </span>
                     <Button
                         variant='contained'
+                        disabled={addedToCart}
                         sx={{
                             size: 'small',
                             backgroundColor: 'secondary.main',
                         }}
                         onClick={() => addProductToCart({ id, name })}
                     >
-                        Add to cart
+                        {addedToCart ? 'Added' : 'Add to cart'}
                     </Button>
                 </Box>
             </Paper>
