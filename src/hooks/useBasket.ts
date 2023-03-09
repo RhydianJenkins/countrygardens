@@ -1,10 +1,10 @@
 import React from "react";
 
-type BasketType = Record<string, number>;
-type AddBasketItemType = (id: string) => void;
-type RemoveBasketItemType = (id: string, number?: number) => void;
-type BasketReturnType = [ BasketType, AddBasketItemType, RemoveBasketItemType ];
-type BasketContextType = {
+export type BasketType = Record<string, number>;
+export type AddBasketItemType = (id: string) => void;
+export type RemoveBasketItemType = (id: string, number?: number) => void;
+export type BasketReturnType = [ BasketType, AddBasketItemType, RemoveBasketItemType ];
+export type BasketContextType = {
     basket: BasketType,
     addBasketItem: AddBasketItemType,
     removeBasketItem: RemoveBasketItemType

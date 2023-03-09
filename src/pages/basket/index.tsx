@@ -1,4 +1,4 @@
-import { BasketContext } from "@/hooks/useBasket";
+import { AddBasketItemType, BasketContext, RemoveBasketItemType } from "@/hooks/useBasket";
 import {
     Avatar,
     Box,
@@ -12,6 +12,8 @@ import {
     Tooltip,
     Typography,
     Paper,
+    Grid,
+    Divider,
 } from "@mui/material";
 import {
     Image as ImageIcon,
@@ -44,7 +46,10 @@ type BasketRowItem = {
     individualPrice: number;
     priceString: string;
     totalPriceString: string;
+    onAdd: AddBasketItemType;
+    onRemove: RemoveBasketItemType;
 }
+
 function EmptyBasketState() {
     return (
         <Box sx={{
@@ -66,8 +71,114 @@ function EmptyBasketState() {
     );
 }
 
+function BasketListItem({ id, name, number, priceString, totalPriceString, onRemove, onAdd }: BasketRowItem) {
+    return (
+        <ListItem>
+            <Grid container spacing={2}>
+                <Grid item sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexGrow: 1,
+                }}>
+                    <ListItemAvatar>
+                        <Avatar
+                            sx={{
+                                borderRadius: '10px',
+                                width: '6em',
+                                height: '6em',
+                                marginRight: '1em',
+                            }}
+                        >
+                            <ImageIcon/>
+                        </Avatar>
+                    </ListItemAvatar>
+
+                    <ListItemText
+                        primary={name}
+                        secondary={priceString}
+                    />
+                </Grid>
+
+                <Grid item sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexGrow: 1,
+                }}>
+                    <ButtonGroup
+                        disableElevation
+                        aria-label="Controls for number of items in basket"
+                        variant="contained"
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: '0.75em',
+                        }}
+                    >
+                        <Tooltip title="Remove one">
+                            <ListItemButton
+                                sx={{
+                                    backgroundColor: 'primary.main',
+                                    borderRadius: '50%',
+                                    width: '2em',
+                                    height: '2em',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                onClick={() => onRemove(id)}
+                            >
+                                <RemoveIcon />
+                            </ListItemButton>
+                        </Tooltip>
+
+                        <Box component="span" sx={{ width: '1em', textAlign: 'center' }}>{number}</Box>
+
+                        <Tooltip title="Add one">
+                            <ListItemButton
+                                sx={{
+                                    backgroundColor: 'primary.main',
+                                    borderRadius: '50%',
+                                    width: '2em',
+                                    height: '2em',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                onClick={() => onAdd(id)}
+                            >
+                                <AddIcon />
+                            </ListItemButton>
+                        </Tooltip>
+
+                        <Box component="span" sx={{ margin: '1em', width: '3em' }}>{totalPriceString}</Box>
+
+                        <Tooltip title={`Remove all ${name} from basket`}>
+                            <ListItemButton
+                                sx={{
+                                    marginLeft: '2em',
+                                    borderRadius: '50%',
+                                    width: '2em',
+                                    height: '2em',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                onClick={() => onRemove(id, 9999)}
+                            >
+                                <DeleteIcon />
+                            </ListItemButton>
+                        </Tooltip>
+                    </ButtonGroup>
+                </Grid>
+            </Grid>
+        </ListItem>
+    );
+}
+
 function BasketPage({ allProducts }: BasketPageProps) {
-    const { basket, addBasketItem, removeBasketItem} = React.useContext(BasketContext);
+    const { basket, addBasketItem, removeBasketItem } = React.useContext(BasketContext);
     const [basketArray, setBasketArray] = React.useState<BasketRowItem[]>([]);
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
 
@@ -90,6 +201,8 @@ function BasketPage({ allProducts }: BasketPageProps) {
                 totalPrice,
                 priceString,
                 totalPriceString,
+                onAdd: addBasketItem,
+                onRemove: removeBasketItem,
             };
         });
 
@@ -130,96 +243,11 @@ function BasketPage({ allProducts }: BasketPageProps) {
                             width: '100%',
                         }}
                     >
-                        {basketArray.map(({ id, name, number, priceString, totalPriceString }, index) => (
-                            <ListItem key={index}>
-                                <ListItemAvatar>
-                                    <Avatar
-                                        sx={{
-                                            borderRadius: '10px',
-                                            width: '6em',
-                                            height: '6em',
-                                            marginRight: '1em',
-                                        }}
-                                    >
-                                        <ImageIcon/>
-                                    </Avatar>
-                                </ListItemAvatar>
-
-                                <ListItemText
-                                    primary={name}
-                                    secondary={priceString}
-                                    sx={{
-                                        marginRight: '5em',
-                                    }}
-                                />
-
-                                <ButtonGroup
-                                    disableElevation
-                                    aria-label="Controls for number of items in basket"
-                                    variant="contained"
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        gap: '0.75em',
-                                    }}
-                                >
-                                    <Tooltip title="Remove one">
-                                        <ListItemButton
-                                            sx={{
-                                                backgroundColor: 'primary.main',
-                                                borderRadius: '50%',
-                                                width: '2em',
-                                                height: '2em',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                            onClick={() => removeBasketItem(id)}
-                                        >
-                                            <RemoveIcon />
-                                        </ListItemButton>
-                                    </Tooltip>
-
-                                    <Box component="span" sx={{ width: '1em', textAlign: 'center' }}>{number}</Box>
-
-                                    <Tooltip title="Add one">
-                                        <ListItemButton
-                                            sx={{
-                                                backgroundColor: 'primary.main',
-                                                borderRadius: '50%',
-                                                width: '2em',
-                                                height: '2em',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                            onClick={() => addBasketItem(id)}
-                                        >
-                                            <AddIcon />
-                                        </ListItemButton>
-                                    </Tooltip>
-
-                                    <Box component="span" sx={{ margin: '1em', width: '3em' }}>{totalPriceString}</Box>
-
-                                    <Tooltip title={`Remove all ${name} from basket`}>
-                                        <ListItemButton
-                                            sx={{
-                                                marginLeft: '2em',
-                                                borderRadius: '50%',
-                                                width: '2em',
-                                                height: '2em',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                            onClick={() => removeBasketItem(id, 9999)}
-                                        >
-                                            <DeleteIcon />
-                                        </ListItemButton>
-                                    </Tooltip>
-                                </ButtonGroup>
-                            </ListItem>
+                        {basketArray.map((rowItem, key) => (
+                            <span key={key}>
+                                { key > 0 && <Divider />}
+                                <BasketListItem {...rowItem} />
+                            </span>
                         ))}
                     </List>
                 </Paper>
