@@ -33,3 +33,27 @@ flyctl launch --dockerfile ./src/docker/Dockerfile.pb # Set up the remote machin
 flyctl volumes create pb_data --size=1 # Create an instance to store the database
 flyctl deploy # Deploy to that instance. Run this command again to apply config changes
 ```
+
+## Database Migrations
+
+Generate a local `pb_migrations` file, upload to fly.io, execute.
+
+```bash
+# Register ssh key with local agent (if you haven't already)
+flyctl ssh issue --agent
+
+# Proxies connections to a fly VM through a Wireguard tunnel
+flyctl proxy 10022:22
+
+# Tar a copy of your locally generated migrations
+tar cvzf path/to/local/pb_migrations
+
+# Copy them to fly VM
+scp -r -P 10022 path/to/local/pb_migrations.tar.gz root@localhost:/pb/pb_migraions.tar.gz
+
+# SSH into fly VM
+flyctl ssh console
+
+# Execute migration
+cd pb && ./pocketbase migrate
+```
