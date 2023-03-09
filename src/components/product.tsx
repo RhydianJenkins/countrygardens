@@ -2,7 +2,7 @@ import { ProductEntity } from '@/pages/api/products';
 import { Link as MuiLink, Alert, Box, Button, Paper, Snackbar, Typography } from '@mui/material';
 import NextLink from 'next/link';
 import React from 'react';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { BasketContext } from '@/hooks/useBasket';
 
 export const formatter = new Intl.NumberFormat('en-EU', {
@@ -10,7 +10,7 @@ export const formatter = new Intl.NumberFormat('en-EU', {
     currency: 'GBP',
 });
 
-export default function Product({ id, name, value }: ProductEntity) {
+export default function Product({ id, name, value, imageUrl }: ProductEntity) {
     const { addBasketItem } = React.useContext(BasketContext);
     const [open, setOpen] = React.useState(false);
     const [lastAddedProduct, setLastAddedProduct] = React.useState('');
@@ -25,7 +25,7 @@ export default function Product({ id, name, value }: ProductEntity) {
         setAddedToCart(true);
     };
 
-    const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -60,7 +60,7 @@ export default function Product({ id, name, value }: ProductEntity) {
                     flexDirection: 'column',
                 }}
             >
-                <Box
+                {imageUrl && <Box
                     sx={{
                         flexGrow: 1,
                         height: '20em',
@@ -69,13 +69,13 @@ export default function Product({ id, name, value }: ProductEntity) {
                         position: 'relative',
                     }}
                 >
-                    <Image
-                        fill
-                        src="/img/orange_placeholder.jpg"
-                        alt="placeholder"
-                        sizes='100vw'
+                    <NextImage
+                        src={imageUrl}
+                        alt={name}
+                        width={500}
+                        height={500}
                     />
-                </Box>
+                </Box>}
                 <Box
                     sx={{
                         display: 'flex',
