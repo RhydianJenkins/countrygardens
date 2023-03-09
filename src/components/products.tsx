@@ -11,7 +11,6 @@ function Products({ products }: ProductsProps) {
     return (
         <section id='shop'>
             <Box sx={{
-                backgroundColor: 'secondary.main',
                 padding: '1em',
                 paddingTop: '10em',
                 textAlign: 'center',
@@ -20,7 +19,6 @@ function Products({ products }: ProductsProps) {
             </Box>
 
             <Box sx={{
-                backgroundColor: 'secondary.main',
                 margin: 'auto',
                 gap: '16px',
                 padding: '1em',

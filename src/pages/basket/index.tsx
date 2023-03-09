@@ -1,5 +1,5 @@
 import { BasketContext } from "@/hooks/useBasket";
-import { Avatar, Box, ButtonGroup, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from "@mui/material";
+import { Avatar, Box, Button as MuiButton, ButtonGroup, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from "@mui/material";
 import {
     Image as ImageIcon,
     Add as AddIcon,
@@ -152,6 +152,17 @@ function BasketPage({ allProducts }: BasketPageProps) {
                         </ListItem>
                     ))}
                 </List>
+                <MuiButton
+                    variant="contained"
+                    onClick={() => alert('Checkout coming soon!')}
+                    sx={{
+                        backgroundColor: 'secondary.main',
+                        marginTop: '5em',
+                        float: 'right',
+                    }}
+                >
+                    Checkout
+                </MuiButton>
             </Box>
         </Box>
     );
