@@ -23,18 +23,9 @@ function ContactUs() {
                     marginBottom: '10em',
                 }}
             >
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={4}>
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                gap: '0.25em',
-                                paddingBottom: '1em',
-                            }}
-                        >
+                <Grid container spacing={2} justifyContent="center">
+                    <Grid item xs={12} md={2}>
+                        <Typography variant="subtitle1">
                             <Tooltip title="Address"><Home /></Tooltip>
                         </Typography>
 
@@ -43,22 +34,14 @@ function ContactUs() {
                         <Typography variant="body1">Chichester</Typography>
                         <Typography variant="body1">PO20 0PZ</Typography>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                gap: '0.25em',
-                            }}
-                        >
+                    <Grid item xs={12} md={2}>
+                        <Typography variant="subtitle1">
                             <Tooltip title="Opening Times"><AccessTimeFilled /></Tooltip>
                         </Typography>
                         <Typography
                             variant="caption"
                             sx={{
-                                padding: '10px',
+                                padding: '1em',
                             }}
                         >
                             (Bank holidays may vary)
@@ -72,17 +55,8 @@ function ContactUs() {
                         <Typography variant="body1">Saturday: 8-4</Typography>
                         <Typography variant="body1">Sunday: Closed</Typography>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                paddingBottom: '1em',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                gap: '0.25em',
-                            }}
-                        >
+                    <Grid item xs={12} md={2}>
+                        <Typography variant="subtitle1">
                             <Tooltip title="Mobile"><PhoneIphone /></Tooltip>
                         </Typography>
                         <Typography variant="body1">01243 607400</Typography>
