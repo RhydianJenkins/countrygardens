@@ -1,10 +1,12 @@
 import { getPocketBase } from "@/database";
 import { NextApiRequest, NextApiResponse } from "next";
+import Client, { Record } from "pocketbase";
 
 export interface ProductEntity {
     id: string;
     name: string;
     value: number;
+    imageUrl: string|null;
 }
 
 export const getProducts = async (): Promise<ProductEntity[]> => {
@@ -15,7 +17,13 @@ export const getProducts = async (): Promise<ProductEntity[]> => {
             .collection('products')
             .getFullList({ sort: '-created' });
 
-        const products = response.map(({ id, name, value }) => ({ id, name, value }));
+        const products = response.map((product) => ({
+            id: product.id,
+            name: product.name,
+            value: product.value,
+            imageUrl: getProductImageUrl(pb, product),
+        }));
+
         return products;
     } catch (error) {
         // eslint-disable-next-line no-console
@@ -23,6 +31,16 @@ export const getProducts = async (): Promise<ProductEntity[]> => {
     }
 
     return [];
+};
+
+const getProductImageUrl = (pb: Client, product: Record): string|null => {
+    if (!product.image) {
+        return null;
+    }
+
+    const url = pb.getFileUrl(product, product.image);
+
+    return url;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
