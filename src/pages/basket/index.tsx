@@ -59,7 +59,7 @@ function EmptyBasketState() {
             gap: '1em',
             alignItems: 'center',
         }}>
-            <h1>Empty Basket</h1>
+            <Typography variant='h2' textAlign='center'>Empty Basket</Typography>
             <Box sx={{
                 minHeight: 'calc(100vh - 33.25em)',
                 padding: '1em',
@@ -133,7 +133,9 @@ function BasketListItem({ id, name, number, priceString, totalPriceString, onRem
                             </ListItemButton>
                         </Tooltip>
 
-                        <Box component="span" sx={{ width: '1em', textAlign: 'center' }}>{number}</Box>
+                        <Box component="span" sx={{ width: '1em', textAlign: 'center' }}>
+                            <Typography>{number}</Typography>
+                        </Box>
 
                         <Tooltip title="Add one">
                             <ListItemButton
@@ -152,7 +154,9 @@ function BasketListItem({ id, name, number, priceString, totalPriceString, onRem
                             </ListItemButton>
                         </Tooltip>
 
-                        <Box component="span" sx={{ margin: '1em', width: '3em' }}>{totalPriceString}</Box>
+                        <Box component="span" sx={{ margin: '1em', width: '3em' }}>
+                            <Typography>{totalPriceString}</Typography>
+                        </Box>
 
                         <Tooltip title={`Remove all ${name} from basket`}>
                             <ListItemButton
@@ -225,7 +229,7 @@ function BasketPage({ allProducts }: BasketPageProps) {
             marginTop: '10em',
             alignItems: 'center',
         }}>
-            <h1>Basket</h1>
+            <Typography variant='h2'>Basket</Typography>
             <Box sx={{
                 minHeight: 'calc(100vh - 22em)',
                 padding: '1em',
@@ -245,7 +249,7 @@ function BasketPage({ allProducts }: BasketPageProps) {
                     >
                         {basketArray.map((rowItem, key) => (
                             <span key={key}>
-                                { key > 0 && <Divider />}
+                                { key > 0 && <Divider variant="middle" />}
                                 <BasketListItem {...rowItem} />
                             </span>
                         ))}
@@ -270,7 +274,7 @@ function BasketPage({ allProducts }: BasketPageProps) {
                             backgroundColor: 'secondary.main',
                         }}
                     >
-                        Checkout
+                        <Typography>Checkout</Typography>
                     </MuiButton>
                 </Box>
             </Box>

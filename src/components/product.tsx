@@ -44,11 +44,13 @@ export default function Product({ id, name, value, imageUrl }: ProductEntity) {
                 <Alert
                     onClose={handleClose}
                     severity="success"
+                    action={
+                        <Button variant="outlined" color='success' size='small'>
+                            <NextLink href='/basket'>View Basket</NextLink>
+                        </Button>
+                    }
                 >
                     {`${lastAddedProduct} added to basket. `}
-                    <NextLink href='/basket'>
-                        <MuiLink component='span' underline='hover'>View basket</MuiLink>
-                    </NextLink>
                 </Alert>
             </Snackbar>
 
