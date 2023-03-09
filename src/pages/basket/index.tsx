@@ -1,5 +1,5 @@
 import { BasketContext } from "@/hooks/useBasket";
-import { Avatar, Box, Button as MuiButton, ButtonGroup, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from "@mui/material";
+import { Avatar, Box, Button as MuiButton, ButtonGroup, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material";
 import {
     Image as ImageIcon,
     Add as AddIcon,
@@ -27,12 +27,14 @@ type BasketRowItem = {
     id: string;
     name: string;
     number: number;
+    totalPrice: number;
     priceString: string;
 }
 
 function BasketPage({ allProducts }: BasketPageProps) {
     const { basket, addBasketItem, removeBasketItem} = React.useContext(BasketContext);
     const [basketArray, setBasketArray] = React.useState<BasketRowItem[]>([]);
+    const [totalBasketCost, setTotalBasketCost] = React.useState(0);
 
     React.useEffect(() => {
         const basketArray = Object.entries(basket).map(([id, number]) => {
@@ -42,10 +44,15 @@ function BasketPage({ allProducts }: BasketPageProps) {
             const totalPrice = number * individualPrice;
             const priceString = formatter.format(totalPrice / 100);
 
-            return { id, name, number, priceString };
+            return { id, name, number, totalPrice, priceString };
         });
 
+        const newTotalBasketCost = basketArray.reduce((acc, cur) => {
+            return acc + cur.totalPrice;
+        }, 0);
+
         setBasketArray(basketArray);
+        setTotalBasketCost(newTotalBasketCost);
     }, [basket]);
 
     return (
@@ -152,17 +159,28 @@ function BasketPage({ allProducts }: BasketPageProps) {
                         </ListItem>
                     ))}
                 </List>
-                <MuiButton
-                    variant="contained"
-                    onClick={() => alert('Checkout coming soon!')}
+
+                <Box
                     sx={{
-                        backgroundColor: 'secondary.main',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
                         marginTop: '5em',
-                        float: 'right',
+                        gap: '5em',
                     }}
                 >
-                    Checkout
-                </MuiButton>
+                    <Typography variant="subtitle1">{formatter.format(totalBasketCost / 100)}</Typography>
+                    <MuiButton
+                        variant="contained"
+                        disabled={totalBasketCost <= 0}
+                        onClick={() => alert('Checkout coming soon!')}
+                        sx={{
+                            backgroundColor: 'secondary.main',
+                        }}
+                    >
+                        Checkout
+                    </MuiButton>
+                </Box>
             </Box>
         </Box>
     );
