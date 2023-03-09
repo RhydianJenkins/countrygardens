@@ -42,7 +42,10 @@ function Header() {
         const element = document.getElementById(elementId);
 
         if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+            const isOnMobile = window.innerWidth <= 600;
+            isOnMobile
+                ? element.scrollIntoView()
+                : element.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
