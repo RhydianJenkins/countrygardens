@@ -8,9 +8,8 @@ function ContactUs() {
         <section id='contact-us'>
             <Box
                 sx={{
-                    backgroundColor: 'secondary.main',
                     padding: '1em',
-                    paddingTop: '10em',
+                    marginTop: '10em',
                     textAlign: 'center',
                 }}
             >
@@ -19,9 +18,9 @@ function ContactUs() {
 
             <Box
                 sx={{
-                    backgroundColor: 'secondary.main',
                     padding: '1em',
                     textAlign: 'center',
+                    marginBottom: '10em',
                 }}
             >
                 <Grid container spacing={2}>

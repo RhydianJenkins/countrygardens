@@ -5,7 +5,7 @@ import React from 'react';
 import Image from 'next/image';
 import { BasketContext } from '@/hooks/useBasket';
 
-const formatter = new Intl.NumberFormat('en-EU', {
+export const formatter = new Intl.NumberFormat('en-EU', {
     style: 'currency',
     currency: 'GBP',
 });
@@ -80,6 +80,7 @@ export default function Product({ id, name, value }: ProductEntity) {
                         height: '5em',
                         justifyContent: 'space-between',
                         padding: '1em',
+                        backgroundColor: 'primary.main',
                     }}
                 >
                     <span>
@@ -90,6 +91,7 @@ export default function Product({ id, name, value }: ProductEntity) {
                         variant='contained'
                         sx={{
                             size: 'small',
+                            backgroundColor: 'secondary.main',
                         }}
                         onClick={() => addProductToCart({ id, name })}
                     >
