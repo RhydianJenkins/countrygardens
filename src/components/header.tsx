@@ -11,12 +11,14 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import NextLink from 'next/link';
 import BasketIcon from './basketIcon';
+import { useRouter } from 'next/router';
 
 const pages = ['Shop', 'Contact Us'];
 
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [scrollPosition, setScrollPosition] = React.useState(0);
+    const router = useRouter();
 
     const handleScroll = () => {
         const position = window.pageYOffset;
@@ -31,7 +33,11 @@ function Header() {
         }
     };
 
-    const scrollToElement = (name: string) => {
+    const scrollToElement = async (name: string) => {
+        if (window.location.pathname !== '/') {
+            await router.push('/');
+        }
+
         const elementId = getElementId(name);
         const element = document.getElementById(elementId);
 
