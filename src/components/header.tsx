@@ -129,7 +129,6 @@ function Header() {
                     </Box>
                     <Typography
                         variant="h5"
-                        noWrap
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -139,6 +138,7 @@ function Header() {
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
+                            textAlign: 'center',
                         }}
                     >
                         <NextLink href='/'>Country Gardens</NextLink>
