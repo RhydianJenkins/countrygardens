@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import NextImage from 'next/image';
 
 function Info() {
@@ -10,14 +10,12 @@ function Info() {
             textAlign: 'center',
             position: 'relative',
             objectFit: 'cover',
-            backgroundColor: 'red',
         }}>
             <NextImage
                 src="/logo.jpg"
                 alt="Country Gardens Logo"
                 fill
             />
-            <Typography variant="h2" component="h2">Greengrocer</Typography>
         </Box>
     );
 }
