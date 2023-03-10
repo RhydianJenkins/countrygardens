@@ -73,14 +73,12 @@ function Header() {
                     <NextLink href='/'>
                         <Typography
                             variant="h6"
-                            noWrap
                             sx={{
                                 mr: 2,
                                 display: { xs: 'none', md: 'flex' },
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
-                                color: 'inherit',
                                 textDecoration: 'none',
                             }}
                         >
@@ -95,7 +93,6 @@ function Header() {
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleOpenNavMenu}
-                            color="inherit"
                         >
                             <MenuIcon />
                         </IconButton>
@@ -136,7 +133,6 @@ function Header() {
                             fontFamily: 'monospace',
                             fontWeight: 700,
                             letterSpacing: '.3rem',
-                            color: 'inherit',
                             textDecoration: 'none',
                             textAlign: 'center',
                         }}
@@ -148,9 +144,9 @@ function Header() {
                             <Button
                                 key={page}
                                 onClick={() => handleCloseNavMenu(page)}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                sx={{ my: 2, display: 'block' }}
                             >
-                                {page}
+                                <Typography color="common.black">{page}</Typography>
                             </Button>
                         ))}
                     </Box>
