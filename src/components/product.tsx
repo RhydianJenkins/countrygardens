@@ -72,9 +72,10 @@ export default function Product({ id, name, value, imageUrl }: ProductEntity) {
                     }}
                 >
                     <NextImage
-                        fill
                         src={imageUrl}
                         alt={name}
+                        width={320}
+                        height={320}
                     />
                 </Box>}
                 <Box

@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import React from "react";
 import NextLink from 'next/link';
+import NextImage from 'next/image';
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { formatter } from "@/components/product";
 
@@ -46,6 +47,7 @@ type BasketRowItem = {
     individualPrice: number;
     priceString: string;
     totalPriceString: string;
+    imageUrl: string|null;
     onAdd: AddBasketItemType;
     onRemove: RemoveBasketItemType;
 }
@@ -71,7 +73,16 @@ function EmptyBasketState() {
     );
 }
 
-function BasketListItem({ id, name, number, priceString, totalPriceString, onRemove, onAdd }: BasketRowItem) {
+function BasketListItem({
+    id,
+    name,
+    number,
+    priceString,
+    totalPriceString,
+    imageUrl,
+    onRemove,
+    onAdd,
+}: BasketRowItem) {
     return (
         <ListItem>
             <Grid container spacing={2}>
@@ -87,9 +98,18 @@ function BasketListItem({ id, name, number, priceString, totalPriceString, onRem
                                 width: '6em',
                                 height: '6em',
                                 marginRight: '1em',
+                                position: 'relative',
                             }}
                         >
-                            <ImageIcon/>
+                            {imageUrl ?
+                                <NextImage
+                                    src={imageUrl}
+                                    alt={name}
+                                    width={120}
+                                    height={120}
+                                />
+                                : <ImageIcon />
+                            }
                         </Avatar>
                     </ListItemAvatar>
 
@@ -189,7 +209,9 @@ function BasketPage({ allProducts }: BasketPageProps) {
     React.useEffect(() => {
         const basketArray = Object.entries(basket).map(([id, number]) => {
             const product = allProducts.find(product => product.id === id);
+
             const name = product?.name || '';
+            const imageUrl = product?.imageUrl || null;
 
             const individualPrice = product?.value || 0;
             const priceString = formatter.format(individualPrice / 100);
@@ -205,6 +227,7 @@ function BasketPage({ allProducts }: BasketPageProps) {
                 totalPrice,
                 priceString,
                 totalPriceString,
+                imageUrl,
                 onAdd: addBasketItem,
                 onRemove: removeBasketItem,
             };
