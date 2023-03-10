@@ -1,15 +1,22 @@
 import { Box, Typography } from '@mui/material';
+import NextImage from 'next/image';
 
 function Info() {
     return (
         <Box sx={{
-            minWidth: '20em',
-            minHeight: '10em',
-            position: 'relative',
+            width: '80%',
+            height: '50%',
             padding: '16px',
             textAlign: 'center',
+            position: 'relative',
+            objectFit: 'cover',
+            backgroundColor: 'red',
         }}>
-            <Typography variant="h1" component="h1">Country Gardens</Typography>
+            <NextImage
+                src="/logo.jpg"
+                alt="Country Gardens Logo"
+                fill
+            />
             <Typography variant="h2" component="h2">Greengrocer</Typography>
         </Box>
     );
@@ -19,8 +26,7 @@ export default function Cover() {
         <Box sx={{
             backgroundColor: 'primary.main',
             width: '100vw',
-            minHeight: '40em',
-            maxHeight: '80vh',
+            height: '512px',
             spacing: 0,
             justify: 'space-around',
             display: 'flex',
