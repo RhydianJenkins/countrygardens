@@ -1,5 +1,5 @@
 import { ProductEntity } from '@/pages/api/products';
-import { Link as MuiLink, Alert, Box, Button, Paper, Snackbar, Typography } from '@mui/material';
+import { Alert, Box, Button, Paper, Snackbar, Typography } from '@mui/material';
 import NextLink from 'next/link';
 import React from 'react';
 import NextImage from 'next/image';
@@ -76,6 +76,7 @@ export default function Product({ id, name, value, imageUrl }: ProductEntity) {
                         alt={name}
                         width={320}
                         height={320}
+                        style={{ objectFit:"cover" }}
                     />
                 </Box>}
                 <Box

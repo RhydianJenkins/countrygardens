@@ -107,6 +107,7 @@ function BasketListItem({
                                     alt={name}
                                     width={120}
                                     height={120}
+                                    style={{ objectFit: "cover" }}
                                 />
                                 : <ImageIcon />
                             }

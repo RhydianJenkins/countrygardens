@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { Facebook } from '@mui/icons-material';
+import NextLink from 'next/link';
 
 export default function Footer() {
     return (
@@ -13,9 +14,9 @@ export default function Footer() {
             alignItems: 'center',
             height: '10em',
         }}>
-            <a href="https://www.facebook.com/CountryGardensSelsey" target="_blank">
+            <NextLink href="https://www.facebook.com/CountryGardensSelsey" target="_blank">
                 <Facebook />
-            </a>
+            </NextLink>
         </Box>
     );
 }
