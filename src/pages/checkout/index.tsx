@@ -4,7 +4,7 @@ import { formatter } from "@/components/product";
 import { BasketContext } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import React from "react";
 
 type CheckoutPageProps = {
@@ -65,6 +65,8 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [userDetails, setUserDetails] = React.useState({});
+
+    const priceString = formatter.format(totalBasketCost / 100);
 
     React.useEffect(() => {
         const basketPrices = Object.entries(basket).map(([id, number]) => {
@@ -136,7 +138,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
             <form noValidate onSubmit={handleSubmit(onSubmit)}>
                 {activeStep === 0 && <Basket
                     allProducts={allProducts}
-                    totalPrice={formatter.format(totalBasketCost / 100)}
+                    totalPrice={priceString}
                 />}
 
                 {activeStep === 1 && <CheckoutFields register={register} errors={errors} />}
@@ -146,7 +148,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                 <StepControls
                     handleBack={handleBack}
                     activeStep={activeStep}
-                    priceString={formatter.format(totalBasketCost / 100)}
+                    priceString={priceString}
                 />
             </form>
         </Box>
