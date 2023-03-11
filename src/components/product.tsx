@@ -46,7 +46,7 @@ export default function Product({ id, name, value, imageUrl }: ProductEntity) {
                     severity="success"
                     action={
                         <Button variant="outlined" color='success' size='small'>
-                            <NextLink href='/basket'>View Basket</NextLink>
+                            <NextLink href='/checkout'>View Basket</NextLink>
                         </Button>
                     }
                 >

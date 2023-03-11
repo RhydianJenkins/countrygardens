@@ -15,7 +15,7 @@ const BasketIcon = () => {
     }, [basket]);
 
     return (
-        <NextLink href='/basket'>
+        <NextLink href='/checkout'>
             <Tooltip title="Go to Basket">
                 <Badge color="secondary" badgeContent={basketCount}>
                     <ShoppingBasket />

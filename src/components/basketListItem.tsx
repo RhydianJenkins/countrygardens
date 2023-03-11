@@ -1,46 +1,14 @@
-import { AddBasketItemType, BasketContext, RemoveBasketItemType } from "@/hooks/useBasket";
-import {
-    Avatar,
-    Box,
-    Button as MuiButton,
-    ButtonGroup,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
-    Tooltip,
-    Typography,
-    Paper,
-    Grid,
-    Divider,
-} from "@mui/material";
+import { AddBasketItemType, RemoveBasketItemType } from "@/hooks/useBasket";
+import { Avatar, Box, ButtonGroup, Grid, ListItem, ListItemAvatar, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material";
 import {
     Image as ImageIcon,
     Add as AddIcon,
     Remove as RemoveIcon,
     Delete as DeleteIcon,
 } from '@mui/icons-material';
-import React from "react";
-import NextLink from 'next/link';
 import NextImage from 'next/image';
-import { getProducts, ProductEntity } from "@/pages/api/products";
-import { formatter } from "@/components/product";
 
-export const getStaticProps = async () => {
-    const allProducts = await getProducts();
-
-    return {
-        props: { allProducts },
-        revalidate: 20,
-    };
-};
-
-type BasketPageProps = {
-    allProducts: ProductEntity[];
-}
-
-type BasketRowItem = {
+export type BasketListItemProps = {
     id: string;
     name: string;
     number: number;
@@ -53,27 +21,6 @@ type BasketRowItem = {
     onRemove: RemoveBasketItemType;
 }
 
-function EmptyBasketState() {
-    return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            margin: '10em',
-            gap: '1em',
-            alignItems: 'center',
-        }}>
-            <Typography variant='h2' textAlign='center'>Empty Basket</Typography>
-            <Box sx={{
-                minHeight: 'calc(100vh - 33.25em)',
-                padding: '1em',
-                flexGrow: 1,
-            }}>
-                <NextLink href='/'>(Go Home)</NextLink>
-            </Box>
-        </Box>
-    );
-}
-
 function BasketListItem({
     id,
     name,
@@ -83,7 +30,7 @@ function BasketListItem({
     imageUrl,
     onRemove,
     onAdd,
-}: BasketRowItem) {
+}: BasketListItemProps) {
     return (
         <ListItem>
             <Grid container spacing={2}>
@@ -203,119 +150,4 @@ function BasketListItem({
     );
 }
 
-function BasketPage({ allProducts }: BasketPageProps) {
-    const { basket, addBasketItem, removeBasketItem } = React.useContext(BasketContext);
-    const [basketArray, setBasketArray] = React.useState<BasketRowItem[]>([]);
-    const [totalBasketCost, setTotalBasketCost] = React.useState(0);
-
-    React.useEffect(() => {
-        const basketArray: BasketRowItem[] = [];
-
-        Object.entries(basket).forEach(([id, number]) => {
-            const product = allProducts.find(product => product.id === id);
-
-            if (!product) {
-                // eslint-disable-next-line no-console
-                console.log(`Product ${id} not found. Removing from basket.`);
-                removeBasketItem(id, 999);
-                return;
-            }
-
-            const name = product?.name || '';
-            const imageUrl = product?.imageUrl || null;
-
-            const individualPrice = product?.value || 0;
-            const priceString = formatter.format(individualPrice / 100);
-
-            const totalPrice = number * individualPrice;
-            const totalPriceString = formatter.format(totalPrice / 100);
-
-            const newBasketItem = {
-                id,
-                name,
-                number,
-                individualPrice,
-                totalPrice,
-                priceString,
-                totalPriceString,
-                imageUrl,
-                onAdd: addBasketItem,
-                onRemove: removeBasketItem,
-            };
-
-            basketArray.push(newBasketItem);
-        });
-
-        const newTotalBasketCost = basketArray.reduce((acc, cur) => {
-            return acc + cur.totalPrice;
-        }, 0);
-
-        setBasketArray(basketArray);
-        setTotalBasketCost(newTotalBasketCost);
-    }, [basket]);
-
-    if (basketArray.length === 0) {
-        return <EmptyBasketState />;
-    }
-
-    return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: '10em',
-            alignItems: 'center',
-        }}>
-            <Typography variant='h2'>Basket</Typography>
-            <Box sx={{
-                minHeight: 'calc(100vh - 22em)',
-                padding: '1em',
-                flexGrow: 1,
-            }}>
-                <Paper
-                    elevation={3}
-                    sx={{
-                        backgroundColor: 'background.default',
-                    }}
-                >
-                    <List
-                        sx={{
-                            borderRadius: '5px 5px 0 0',
-                            width: '100%',
-                        }}
-                    >
-                        {basketArray.map((rowItem, key) => (
-                            <span key={key}>
-                                { key > 0 && <Divider variant="middle" />}
-                                <BasketListItem {...rowItem} />
-                            </span>
-                        ))}
-                    </List>
-                </Paper>
-
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'right',
-                        alignItems: 'center',
-                        marginTop: '5em',
-                        gap: '3em',
-                    }}
-                >
-                    <Typography variant="subtitle1">{formatter.format(totalBasketCost / 100)}</Typography>
-                    <MuiButton
-                        variant="contained"
-                        disabled={totalBasketCost <= 0}
-                        onClick={() => alert('Checkout coming soon!')}
-                        sx={{
-                            backgroundColor: 'secondary.main',
-                        }}
-                    >
-                        <Typography>Checkout</Typography>
-                    </MuiButton>
-                </Box>
-            </Box>
-        </Box>
-    );
-}
-
-export default BasketPage;
+export default BasketListItem;
