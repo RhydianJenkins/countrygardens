@@ -1,13 +1,14 @@
 import NextLink from 'next/link';
 import { formatter } from "@/components/product";
 import { ProductEntity } from '@/pages/api/products';
-import { Button as MuiButton, Box, Typography, Divider, Paper, List } from '@mui/material';
+import { Box, Typography, Divider, Paper, List } from '@mui/material';
 import { BasketContext } from '@/hooks/useBasket';
 import React from 'react';
 import BasketListItem, { BasketListItemProps } from './basketListItem';
 
 type BasketPageProps = {
     allProducts: ProductEntity[];
+    totalPrice: string;
 }
 
 function EmptyBasketState() {
@@ -15,7 +16,6 @@ function EmptyBasketState() {
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            margin: '10em',
             gap: '1em',
             alignItems: 'center',
         }}>
@@ -31,10 +31,9 @@ function EmptyBasketState() {
     );
 }
 
-function Basket({ allProducts }: BasketPageProps) {
+function Basket({ allProducts, totalPrice }: BasketPageProps) {
     const { basket, addBasketItem, removeBasketItem } = React.useContext(BasketContext);
     const [basketArray, setBasketArray] = React.useState<BasketListItemProps[]>([]);
-    const [totalBasketCost, setTotalBasketCost] = React.useState(0);
 
     React.useEffect(() => {
         const basketArray: BasketListItemProps[] = [];
@@ -74,12 +73,7 @@ function Basket({ allProducts }: BasketPageProps) {
             basketArray.push(newBasketItem);
         });
 
-        const newTotalBasketCost = basketArray.reduce((acc, cur) => {
-            return acc + cur.totalPrice;
-        }, 0);
-
         setBasketArray(basketArray);
-        setTotalBasketCost(newTotalBasketCost);
     }, [basket]);
 
     if (basketArray.length === 0) {
@@ -90,12 +84,11 @@ function Basket({ allProducts }: BasketPageProps) {
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            marginTop: '10em',
             alignItems: 'center',
         }}>
             <Typography variant='h2'>Basket</Typography>
             <Box sx={{
-                minHeight: 'calc(100vh - 22em)',
+                minHeight: 'calc(100vh - 40em)',
                 padding: '1em',
                 flexGrow: 1,
             }}>
@@ -119,28 +112,7 @@ function Basket({ allProducts }: BasketPageProps) {
                         ))}
                     </List>
                 </Paper>
-
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'right',
-                        alignItems: 'center',
-                        marginTop: '5em',
-                        gap: '3em',
-                    }}
-                >
-                    <Typography variant="subtitle1">{formatter.format(totalBasketCost / 100)}</Typography>
-                    <MuiButton
-                        variant="contained"
-                        disabled={totalBasketCost <= 0}
-                        onClick={() => alert('Checkout coming soon!')}
-                        sx={{
-                            backgroundColor: 'secondary.main',
-                        }}
-                    >
-                        <Typography>Checkout</Typography>
-                    </MuiButton>
-                </Box>
+                <Typography variant='subtitle1' textAlign='center' margin='5em'>Subtotal: {totalPrice}</Typography>
             </Box>
         </Box>
     );
