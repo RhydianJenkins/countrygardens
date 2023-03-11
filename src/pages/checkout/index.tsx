@@ -1,10 +1,10 @@
-import CheckoutFields from "@/components/checkoutFields";
+import CheckoutFields, { CheckoutFieldValues } from "@/components/checkoutFields";
 import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
 import { BasketContext } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import React from "react";
 
 type CheckoutPageProps = {
@@ -91,13 +91,13 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: CheckoutFieldValues) => {
         switch (activeStep) {
         case 0: break;
         case 1: setUserDetails(data); break;
         case 2:
+            // TODO create a new stripe payment intent with user and basket details
             alert('Payment not implemented');
-            console.log('userDetails', userDetails);
             return;
 
         default: throw new Error('Unknown checkout step');

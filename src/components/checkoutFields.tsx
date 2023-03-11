@@ -7,6 +7,15 @@ type FieldsProps = {
     errors: FieldErrors<FieldValues>,
 }
 
+export type CheckoutFieldValues = {
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    address1?: string,
+    address2?: string,
+    address3?: string,
+}
+
 function CheckoutFields({ register, errors }: FieldsProps) {
     return (
         <Box sx={{
