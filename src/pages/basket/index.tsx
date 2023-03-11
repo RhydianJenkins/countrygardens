@@ -45,6 +45,7 @@ type BasketRowItem = {
     name: string;
     number: number;
     individualPrice: number;
+    totalPrice: number;
     priceString: string;
     totalPriceString: string;
     imageUrl: string|null;
@@ -208,8 +209,17 @@ function BasketPage({ allProducts }: BasketPageProps) {
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
 
     React.useEffect(() => {
-        const basketArray = Object.entries(basket).map(([id, number]) => {
+        const basketArray: BasketRowItem[] = [];
+
+        Object.entries(basket).forEach(([id, number]) => {
             const product = allProducts.find(product => product.id === id);
+
+            if (!product) {
+                // eslint-disable-next-line no-console
+                console.log(`Product ${id} not found. Removing from basket.`);
+                removeBasketItem(id, 999);
+                return;
+            }
 
             const name = product?.name || '';
             const imageUrl = product?.imageUrl || null;
@@ -220,7 +230,7 @@ function BasketPage({ allProducts }: BasketPageProps) {
             const totalPrice = number * individualPrice;
             const totalPriceString = formatter.format(totalPrice / 100);
 
-            return {
+            const newBasketItem = {
                 id,
                 name,
                 number,
@@ -232,6 +242,8 @@ function BasketPage({ allProducts }: BasketPageProps) {
                 onAdd: addBasketItem,
                 onRemove: removeBasketItem,
             };
+
+            basketArray.push(newBasketItem);
         });
 
         const newTotalBasketCost = basketArray.reduce((acc, cur) => {
