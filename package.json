@@ -14,13 +14,16 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.11",
     "@react-google-maps/api": "^2.18.1",
+    "@stripe/react-stripe-js": "^1.16.5",
+    "@stripe/stripe-js": "^1.48.0",
     "eslint": "8.35.0",
     "eslint-config-next": "^13.2.3",
     "next": "^13.2.3",
     "pocketbase": "^0.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.43.5"
+    "react-hook-form": "^7.43.5",
+    "stripe": "^11.14.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",

@@ -44,12 +44,14 @@ const getProductImageUrl = (pb: Client, product: Record): string|null => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method === "GET") {
-        const products = await getProducts();
-        return res.status(200).json(products);
+    if (req.method !== "GET") {
+        res.setHeader('Allow', 'GET');
+        res.status(405).end('Method Not Allowed');
+        return;
     }
 
-    return res.status(405).json({ error: 'Only GET allowed' });
+    const products = await getProducts();
+    return res.status(200).json(products);
 };
 
 export default handler;
