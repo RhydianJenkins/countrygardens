@@ -1,9 +1,10 @@
-import AddressForm from "@/components/addressForm";
+import CheckoutFields from "@/components/checkoutFields";
 import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
 import { BasketContext } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
 import React from "react";
 
 type CheckoutPageProps = {
@@ -11,7 +12,6 @@ type CheckoutPageProps = {
 }
 
 type StepControlsProps = {
-    handleNext: () => void;
     handleBack: () => void;
     activeStep: number;
     priceString: string;
@@ -28,7 +28,7 @@ export const getStaticProps = async () => {
 
 const steps = ['Basket', 'Your Details', 'Payment'];
 
-function StepControls({ handleNext, handleBack, activeStep, priceString }: StepControlsProps) {
+function StepControls({ handleBack, activeStep, priceString }: StepControlsProps) {
     return (
         <Box sx={{
             display: 'flex',
@@ -47,8 +47,8 @@ function StepControls({ handleNext, handleBack, activeStep, priceString }: StepC
             <Box sx={{ flex: '1 1 auto' }} />
 
             <MuiButton
+                type='submit'
                 variant="contained"
-                onClick={handleNext}
                 sx={{
                     backgroundColor: 'secondary.main',
                 }}
@@ -63,6 +63,8 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const { basket } = React.useContext(BasketContext);
     const [activeStep, setActiveStep] = React.useState(0);
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [userDetails, setUserDetails] = React.useState({});
 
     React.useEffect(() => {
         const basketPrices = Object.entries(basket).map(([id, number]) => {
@@ -79,15 +81,6 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setTotalBasketCost(newTotalBasketCost);
     }, [basket]);
 
-    const handleNext = () => {
-        if (activeStep === steps.length - 1) {
-            alert('Payment not implemented');
-            return;
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
     const handleBack = () => {
         if (activeStep === 0) {
             // eslint-disable-next-line no-console
@@ -96,6 +89,21 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         }
 
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const onSubmit = (data: any) => {
+        switch (activeStep) {
+        case 0: break;
+        case 1: setUserDetails(data); break;
+        case 2:
+            alert('Payment not implemented');
+            console.log('userDetails', userDetails);
+            return;
+
+        default: throw new Error('Unknown checkout step');
+        }
+
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     return (
@@ -125,21 +133,22 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                 })}
             </Stepper>
 
-            {activeStep === 0 && <Basket
-                allProducts={allProducts}
-                totalPrice={formatter.format(totalBasketCost / 100)}
-            />}
+            <form noValidate onSubmit={handleSubmit(onSubmit)}>
+                {activeStep === 0 && <Basket
+                    allProducts={allProducts}
+                    totalPrice={formatter.format(totalBasketCost / 100)}
+                />}
 
-            {activeStep === 1 && <AddressForm />}
+                {activeStep === 1 && <CheckoutFields register={register} errors={errors} />}
 
-            {activeStep === 2 && <Typography variant='h2'>This will be where you pay</Typography>}
+                {activeStep === 2 && <Typography variant='h2'>This will be where you pay</Typography>}
 
-            <StepControls
-                handleNext={handleNext}
-                handleBack={handleBack}
-                activeStep={activeStep}
-                priceString={formatter.format(totalBasketCost / 100)}
-            />
+                <StepControls
+                    handleBack={handleBack}
+                    activeStep={activeStep}
+                    priceString={formatter.format(totalBasketCost / 100)}
+                />
+            </form>
         </Box>
     );
 
