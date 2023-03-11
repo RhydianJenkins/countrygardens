@@ -1,3 +1,4 @@
+import AddressForm from "@/components/addressForm";
 import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
 import { BasketContext } from "@/hooks/useBasket";
@@ -25,7 +26,7 @@ export const getStaticProps = async () => {
     };
 };
 
-const steps = ['Basket', 'Address', 'Payment'];
+const steps = ['Basket', 'Your Details', 'Payment'];
 
 function StepControls({ handleNext, handleBack, activeStep, priceString }: StepControlsProps) {
     return (
@@ -40,7 +41,7 @@ function StepControls({ handleNext, handleBack, activeStep, priceString }: StepC
                 onClick={handleBack}
                 variant='contained'
             >
-                      Back
+              Back
             </MuiButton>
 
             <Box sx={{ flex: '1 1 auto' }} />
@@ -128,6 +129,10 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                 allProducts={allProducts}
                 totalPrice={formatter.format(totalBasketCost / 100)}
             />}
+
+            {activeStep === 1 && <AddressForm />}
+
+            {activeStep === 2 && <Typography variant='h2'>This will be where you pay</Typography>}
 
             <StepControls
                 handleNext={handleNext}
