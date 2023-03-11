@@ -71,7 +71,7 @@ function CheckoutFields({ register, errors }: FieldsProps) {
                     variant="outlined"
                     margin="normal"
                     error={!!errors.address1}
-                    {...register("address1")}
+                    {...register("address1", { required: true })}
                 />
                 <TextField
                     label="Address Line 2"
