@@ -1,7 +1,7 @@
 import { BasketType } from '@/hooks/useBasket';
 import { Box, CircularProgress, Paper } from '@mui/material';
 import { AddressElement, CardElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { PaymentIntent, Stripe, StripeElements } from '@stripe/stripe-js';
+import { PaymentIntent, Stripe, StripeElements, StripeError } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import React from 'react';
 
@@ -39,9 +39,11 @@ export const handlePayment = async ({
     stripe,
     elements,
     onPaymentComplete,
+    onPaymentError,
 }: {
     stripe: Stripe | null,
     elements: StripeElements | null,
+    onPaymentError: (error: StripeError) => void,
     onPaymentComplete: (updatedPaymentIntent: PaymentIntent) => void,
 }) => {
     if (!stripe || !elements) {
@@ -53,12 +55,9 @@ export const handlePayment = async ({
         redirect: 'if_required',
     });
 
-    if (error) {
-        console.error('PAYMENT FAIL:', error);
-        return;
-    }
-
-    onPaymentComplete(paymentIntent);
+    error
+        ? onPaymentError(error)
+        : onPaymentComplete(paymentIntent);
 };
 
 function StripePaymentElement({ setStripe, setElements }: {

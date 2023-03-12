@@ -3,10 +3,10 @@ import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
 import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
-import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import StripePaymentFields, { createPaymentIntent, handlePayment } from "@/components/stripe";
-import { PaymentIntent, Stripe, StripeElements } from "@stripe/stripe-js";
+import { PaymentIntent, Stripe, StripeElements, StripeError } from "@stripe/stripe-js";
 import { useRouter } from 'next/router';
 
 type CheckoutPageProps = {
@@ -18,6 +18,7 @@ type StepControlsProps = {
     handleBack: () => void;
     activeStep: number;
     priceString: string;
+    nextButtonLoading?: boolean;
 }
 
 export const getStaticProps = async () => {
@@ -46,7 +47,16 @@ function getProgressButtonText({ activeStep, priceString }: {
     return 'Got it';
 }
 
-function StepControls({ basket, handleBack, activeStep, priceString }: StepControlsProps) {
+function StepControls({ basket, handleBack, activeStep, priceString, nextButtonLoading }: StepControlsProps) {
+    const [nextDisabled, setNextDisabled] = React.useState(false);
+
+    React.useEffect(() => {
+        const basketIsEmpty = Object.keys(basket).length === 0;
+        const isOnPaymentStep = activeStep === 2;
+
+        setNextDisabled(basketIsEmpty && !isOnPaymentStep);
+    }, [basket]);
+
     return (
         <Box sx={{
             display: 'flex',
@@ -58,7 +68,7 @@ function StepControls({ basket, handleBack, activeStep, priceString }: StepContr
                 onClick={handleBack}
                 variant='contained'
             >
-              Back
+                Back
             </MuiButton>}
 
             <Box sx={{ flex: '1 1 auto' }} />
@@ -66,11 +76,12 @@ function StepControls({ basket, handleBack, activeStep, priceString }: StepContr
             <MuiButton
                 type='submit'
                 variant="contained"
-                disabled={Object.keys(basket).length === 0 && activeStep !== 2}
+                disabled={nextDisabled || nextButtonLoading}
                 sx={{
                     backgroundColor: 'secondary.main',
                 }}
             >
+                {nextButtonLoading && <CircularProgress size={'2em'} sx={{ marginRight: '1em' }}/>}
                 <Typography>{getProgressButtonText({ activeStep, priceString })}</Typography>
             </MuiButton>
         </Box>
@@ -84,6 +95,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [paymentIntent, setPaymentIntent] = React.useState<PaymentIntent|null>(null);
     const [stripe, setStripe] = React.useState<Stripe|null>(null);
     const [elements, setElements] = React.useState<StripeElements|null>(null);
+    const [loading, setLoading] = React.useState(false);
     const router = useRouter();
 
     const priceString = formatter.format(totalBasketCost / 100);
@@ -116,6 +128,11 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const onPaymentComplete = (updatedPaymentIntent: PaymentIntent) => {
         setPaymentIntent(updatedPaymentIntent);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        clearBasket();
+    };
+
+    const onPaymentError = (error: StripeError) => {
+        console.error('onPaymentError', error);
     };
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -123,16 +140,20 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
 
         switch (activeStep) {
         case 0:
+            setLoading(true);
             setPaymentIntent(await createPaymentIntent({ basket }));
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            setLoading(false);
             break;
         case 1:
+            setLoading(true);
             await handlePayment({
                 stripe,
                 elements,
                 onPaymentComplete,
+                onPaymentError,
             });
-            clearBasket();
+            setLoading(false);
             break;
         case 2:
             router.push('/');
@@ -186,6 +207,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                     handleBack={handleBack}
                     activeStep={activeStep}
                     priceString={priceString}
+                    nextButtonLoading={loading}
                 />
             </form>
         </Box>
