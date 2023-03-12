@@ -28,7 +28,22 @@ export const getStaticProps = async () => {
     };
 };
 
-const steps = ['Basket', 'Your Details', 'Payment'];
+const steps = ['Basket', 'Payment', 'Confirmation'];
+
+function getProgressButtonText({ activeStep, priceString }: {
+    activeStep: number,
+    priceString: string
+    }) {
+    if (activeStep === 0) {
+        return 'Go to payment';
+    }
+
+    if (activeStep === 1) {
+        return `Pay ${priceString}`;
+    }
+
+    return 'Got it';
+}
 
 function StepControls({ handleBack, activeStep, priceString }: StepControlsProps) {
     return (
@@ -38,13 +53,12 @@ function StepControls({ handleBack, activeStep, priceString }: StepControlsProps
             padding: '1em',
             margin: '1em',
         }}>
-            <MuiButton
-                disabled={activeStep === 0}
+            {activeStep === 1 && <MuiButton
                 onClick={handleBack}
                 variant='contained'
             >
               Back
-            </MuiButton>
+            </MuiButton>}
 
             <Box sx={{ flex: '1 1 auto' }} />
 
@@ -55,7 +69,7 @@ function StepControls({ handleBack, activeStep, priceString }: StepControlsProps
                     backgroundColor: 'secondary.main',
                 }}
             >
-                <Typography>{activeStep === steps.length - 1 ? `Pay ${priceString}` : 'Next'}</Typography>
+                <Typography>{getProgressButtonText({ activeStep, priceString })}</Typography>
             </MuiButton>
         </Box>
     );
@@ -65,10 +79,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const { basket } = React.useContext(BasketContext);
     const [activeStep, setActiveStep] = React.useState(0);
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
-    const { register, handleSubmit, formState: { errors } } = useForm();
     const [paymentIntent, setPaymentIntent] = React.useState<PaymentIntent|null>(null);
-
-    // TODO these are updating midrerender so they're not working correctly
     const [stripe, setStripe] = React.useState<Stripe|null>(null);
     const [elements, setElements] = React.useState<StripeElements|null>(null);
 
@@ -99,22 +110,29 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const onSubmit = async (userDetails: CheckoutFieldValues) => {
+    const onPaymentFormComplete = (updatedPaymentIntent: PaymentIntent) => {
+        setPaymentIntent(updatedPaymentIntent);
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    };
+
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
         switch (activeStep) {
         case 0:
+            setPaymentIntent(await createPaymentIntent({ basket }));
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             break;
         case 1:
-            setPaymentIntent(await createPaymentIntent({ basket, userDetails }));
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-            break;
-        case 2:
-            handlePayment({
+            await handlePayment({
                 clientSecret: paymentIntent?.client_secret || null,
                 setPaymentIntent,
                 stripe,
                 elements,
+                onComplete: onPaymentFormComplete,
             });
+            break;
+        case 2:
             return;
 
         default: throw new Error('Unknown checkout step');
@@ -148,18 +166,13 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                 })}
             </Stepper>
 
-            <form noValidate onSubmit={handleSubmit(onSubmit)}>
+            <form noValidate onSubmit={(test) => onSubmit(test)}>
                 {activeStep === 0 && <Basket
                     allProducts={allProducts}
                     totalPrice={priceString}
                 />}
 
-                {activeStep === 1 && <CheckoutFields
-                    register={register}
-                    errors={errors}
-                />}
-
-                {activeStep === 2 && <StripePaymentFields
+                {activeStep === 1 && <StripePaymentFields
                     clientSecret={paymentIntent?.client_secret || null}
                     setStripe={setStripe}
                     setElements={setElements}

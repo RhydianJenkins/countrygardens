@@ -1,10 +1,9 @@
 import { BasketType } from '@/hooks/useBasket';
 import { Box, CircularProgress, Paper } from '@mui/material';
-import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
+import { AddressElement, CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { PaymentIntent, Stripe, StripeElements } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import React from 'react';
-import { CheckoutFieldValues } from './checkoutFields';
 
 if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
     throw new Error('Missing NEXT_PUBLIC_STRIPE_PUBLIC_KEY Stripe public key env variable');
@@ -14,10 +13,8 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export const createPaymentIntent = async ({
     basket,
-    userDetails,
 }: {
     basket: BasketType,
-    userDetails: CheckoutFieldValues,
 }): Promise<PaymentIntent> => {
     const response = await fetch(
         'api/payments',
@@ -29,7 +26,6 @@ export const createPaymentIntent = async ({
             },
             body: JSON.stringify({
                 basket,
-                userDetails,
             }),
         }
     );
@@ -41,14 +37,14 @@ export const createPaymentIntent = async ({
 
 export const handlePayment = async ({
     clientSecret,
-    setPaymentIntent,
     stripe,
     elements,
+    onComplete,
 }: {
     clientSecret: string|null,
-    setPaymentIntent: (paymentIntent: PaymentIntent) => void,
     stripe: Stripe | null,
     elements: StripeElements | null,
+    onComplete: (updatedPaymentIntent: PaymentIntent) => void,
 }) => {
     if (!stripe || !elements) {
         // Stripe.js has not yet loaded.
@@ -82,11 +78,11 @@ export const handlePayment = async ({
     );
 
     if (error) {
-        console.error(error);
-        error.payment_intent && setPaymentIntent(error.payment_intent);
-    } else {
-        setPaymentIntent(updatedPaymentIntent);
+        console.error('PAYMENT FAIL', error);
+        return;
     }
+
+    onComplete(updatedPaymentIntent);
 };
 
 function StripePaymentElement({ setStripe, setElements }: {
@@ -102,7 +98,25 @@ function StripePaymentElement({ setStripe, setElements }: {
     }, [stripe, elements]);
 
     return (
-        <CardElement />
+        <section>
+            <AddressElement options={{
+                mode: 'shipping',
+                allowedCountries: ['GB'],
+                autocomplete: {
+                    mode: 'google_maps_api',
+                    apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+                },
+                fields: {
+                    phone: 'always',
+                },
+                validation: {
+                    phone: {
+                        required: 'always',
+                    },
+                },
+            }} />
+            <CardElement options={{ }}/>
+        </section>
     );
 }
 
