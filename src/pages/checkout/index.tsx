@@ -62,25 +62,14 @@ function StepControls({ handleBack, activeStep, priceString }: StepControlsProps
     );
 }
 
-async function beginPayment({
-    basket,
-    userDetails,
-    setPaymentIntent,
-}: {
-    basket: BasketType,
-    userDetails: CheckoutFieldValues,
-    setPaymentIntent: (pi: PaymentIntent) => void,
-}) {
-    const paymentIntent = await createPaymentIntent({ basket, userDetails });
-    setPaymentIntent(paymentIntent);
-}
-
 function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const { basket } = React.useContext(BasketContext);
     const [activeStep, setActiveStep] = React.useState(0);
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [paymentIntent, setPaymentIntent] = React.useState<PaymentIntent|null>(null);
+
+    // TODO these are updating midrerender so they're not working correctly
     const [stripe, setStripe] = React.useState<Stripe|null>(null);
     const [elements, setElements] = React.useState<StripeElements|null>(null);
 
@@ -117,7 +106,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             break;
         case 1:
-            beginPayment({ basket, userDetails, setPaymentIntent });
+            setPaymentIntent(await createPaymentIntent({ basket, userDetails }));
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             break;
         case 2:
@@ -171,17 +160,8 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                     errors={errors}
                 />}
 
-                {activeStep === 2 && !paymentIntent?.client_secret && <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '10em',
-                }}>
-                    <CircularProgress />
-                </Box>}
-
-                {activeStep === 2 && paymentIntent?.client_secret && <StripePaymentFields
-                    clientSecret={paymentIntent.client_secret}
+                {activeStep === 2 && <StripePaymentFields
+                    clientSecret={paymentIntent?.client_secret || null}
                     setStripe={setStripe}
                     setElements={setElements}
                 />}

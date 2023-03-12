@@ -1,5 +1,5 @@
 import { BasketType } from '@/hooks/useBasket';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Paper } from '@mui/material';
 import { CardElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { PaymentIntent, Stripe, StripeElements } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
@@ -97,18 +97,41 @@ function StripePaymentElement({ setStripe, setElements }: {
     stripe && setStripe(stripe);
     elements && setElements(elements);
 
-    return (<PaymentElement />);
+    return (
+        <PaymentElement />
+    );
 }
 
 function StripePaymentFields({ clientSecret, setStripe, setElements }: {
-    clientSecret: string,
+    clientSecret: string|null,
     setStripe: (stripe: Stripe) => void,
     setElements: (elements: StripeElements) => void,
 }) {
+    if (!clientSecret) {
+        return (
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '10em',
+            }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
     return (
-        <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <StripePaymentElement setStripe={setStripe} setElements={setElements} />
-        </Elements>
+        <Paper
+            elevation={3}
+            sx={{
+                padding: '1em',
+                backgroundColor: 'primary.main',
+            }}
+        >
+            <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <StripePaymentElement setStripe={setStripe} setElements={setElements} />
+            </Elements>
+        </Paper>
     );
 }
 
