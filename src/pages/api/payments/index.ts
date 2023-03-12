@@ -2,23 +2,37 @@ import { BasketType } from '@/hooks/useBasket';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import Stripe from 'stripe';
+import { getProducts } from '../products';
 
 const MIN_AMOUNT = 50;
 const MAX_AMOUNT = 100000;
 const PAYMENT_METHOD_TYPE = 'card';
 const CURRENCY = 'gbp';
+const STRIPE_API_VERSION = '2022-11-15';
 
 if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('Missing STRIPE_SECRET_KEY environment variable.');
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2022-11-15',
+    apiVersion: STRIPE_API_VERSION,
 });
 
-const calculateAmount = (basket: BasketType): number => {
-    // TODO
-    return 123;
+const calculateAmount = async (basket: BasketType, res: NextApiResponse): Promise<number> => {
+    const allProducts = await getProducts();
+
+    const totalCost = Object.entries(basket).reduce((acc, [productId, quantity]) => {
+        const product = allProducts.find((p) => p.id === productId);
+
+        if (!product) {
+            res.status(422).json({ error: `Invalid product id: ${productId}` });
+            return 0;
+        }
+
+        return acc + (product.value * quantity);
+    }, 0);
+
+    return totalCost;
 };
 
 export default async function handler(
@@ -33,13 +47,18 @@ export default async function handler(
     const basket = req.body.basket;
 
     if (!basket) {
-        return res.status(422).json({ error: 'Missing basket' });
+        return res.status(422).json({ error: 'Missing basket from request body' });
     }
 
-    const amount = calculateAmount(basket); // TODO get products from request body and calculate amount
+    const amount = await calculateAmount(basket, res);
 
     if (amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
-        return res.status(422).json({ error: 'Invalid basket value.' });
+        return res.status(422).json({
+            error: 'Invalid basket value',
+            min: MIN_AMOUNT,
+            max: MAX_AMOUNT,
+            givenAmount: amount,
+        });
     }
 
     try {

@@ -1,6 +1,6 @@
 import { BasketType } from '@/hooks/useBasket';
 import { Box, CircularProgress, Paper } from '@mui/material';
-import { AddressElement, CardElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { AddressElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { PaymentIntent, Stripe, StripeElements, StripeError } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import React from 'react';
@@ -16,23 +16,34 @@ export const createPaymentIntent = async ({
 }: {
     basket: BasketType,
 }): Promise<PaymentIntent> => {
-    const response = await fetch(
-        'api/payments',
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': "application/json",
-                'accept': 'application/json',
-            },
-            body: JSON.stringify({
-                basket,
-            }),
+    try {
+        const response = await fetch(
+            'api/payments',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': "application/json",
+                    'accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    basket,
+                }),
+            }
+        );
+
+        const paymentIntent = await response.json();
+
+        if (response.status !== 200) {
+            return Promise.reject(response);
         }
-    );
 
-    const paymentIntent = await response.json();
+        return paymentIntent;
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Rejecting promise with error', error);
 
-    return paymentIntent;
+        return Promise.reject(error);
+    }
 };
 
 export const handlePayment = async ({

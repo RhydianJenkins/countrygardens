@@ -1,4 +1,3 @@
-import CheckoutFields, { CheckoutFieldValues } from "@/components/checkoutFields";
 import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
 import { BasketContext, BasketType } from "@/hooks/useBasket";
@@ -128,6 +127,20 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const fetchNewPaymentIntent = async () => {
+        try {
+            const paymentIntent = await createPaymentIntent({ basket });
+            setPaymentIntent(paymentIntent);
+        } catch (error) {
+            setSnackbarMessage('Sorry, something went wrong');
+            setSnackbarOpen(true);
+
+            // eslint-disable-next-line no-console
+            console.error(error);
+            throw new Error('Failed to create stripe payment intent');
+        }
+    };
+
     const onPaymentComplete = (updatedPaymentIntent: PaymentIntent) => {
         setPaymentIntent(updatedPaymentIntent);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -145,7 +158,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         switch (activeStep) {
         case 0:
             setLoading(true);
-            setPaymentIntent(await createPaymentIntent({ basket }));
+            fetchNewPaymentIntent();
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             setLoading(false);
             break;

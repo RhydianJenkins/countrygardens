@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import Stripe from 'stripe';
 
 const webhookHandlers = {
-    'payment_intent.succeeded': async (data: Stripe.PaymentIntent) => {
+    'payment_intent.succeeded': async (paymentIntent: Stripe.PaymentIntent) => {
         // Add your business logic here
     },
-    'payment_intent.payment_failed': async (data: Stripe.PaymentIntent) => {
+    'payment_intent.payment_failed': async (paymentIntent: Stripe.PaymentIntent) => {
         // Add your business logic here
     },
 };
