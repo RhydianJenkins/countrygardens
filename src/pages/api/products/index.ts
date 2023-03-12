@@ -47,11 +47,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "GET") {
         res.setHeader('Allow', 'GET');
         res.status(405).end('Method Not Allowed');
-        return;
+        res.end();
     }
 
     const products = await getProducts();
-    return res.status(200).json(products);
+    res.status(200).json(products);
+    res.end();
 };
 
 export default handler;
