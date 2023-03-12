@@ -1,6 +1,6 @@
 import { BasketType } from '@/hooks/useBasket';
 import { Box, CircularProgress, Paper } from '@mui/material';
-import { CardElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { PaymentIntent, Stripe, StripeElements } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import React from 'react';
@@ -66,6 +66,8 @@ export const handlePayment = async ({
 
     if (!card) {
         console.error('No card element found');
+        console.log('elements', elements);
+        console.log('elements.getElement(CardElement)', elements.getElement(CardElement));
         return;
     }
 
@@ -88,24 +90,26 @@ export const handlePayment = async ({
 };
 
 function StripePaymentElement({ setStripe, setElements }: {
-    setStripe: (stripe: Stripe) => void,
-    setElements: (elements: StripeElements) => void,
+    setStripe: (stripe: Stripe|null) => void,
+    setElements: (elements: StripeElements|null) => void,
 }) {
     const stripe = useStripe();
     const elements = useElements();
 
-    stripe && setStripe(stripe);
-    elements && setElements(elements);
+    React.useEffect(() => {
+        setStripe(stripe);
+        setElements(elements);
+    }, [stripe, elements]);
 
     return (
-        <PaymentElement />
+        <CardElement />
     );
 }
 
 function StripePaymentFields({ clientSecret, setStripe, setElements }: {
     clientSecret: string|null,
-    setStripe: (stripe: Stripe) => void,
-    setElements: (elements: StripeElements) => void,
+    setStripe: (stripe: Stripe|null) => void,
+    setElements: (elements: StripeElements|null) => void,
 }) {
     if (!clientSecret) {
         return (
