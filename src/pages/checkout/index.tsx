@@ -3,11 +3,12 @@ import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
 import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
-import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import React from "react";
-import StripePaymentFields, { createPaymentIntent } from "@/components/stripe";
-import { PaymentIntent } from "@stripe/stripe-js";
+import StripePaymentFields, { createPaymentIntent, handlePayment } from "@/components/stripe";
+import { PaymentIntent, Stripe, StripeElements } from "@stripe/stripe-js";
+import { useElements, useStripe } from "@stripe/react-stripe-js";
 
 type CheckoutPageProps = {
     allProducts: ProductEntity[];
@@ -71,7 +72,6 @@ async function beginPayment({
     setPaymentIntent: (pi: PaymentIntent) => void,
 }) {
     const paymentIntent = await createPaymentIntent({ basket, userDetails });
-    console.log('got a payment intent', paymentIntent);
     setPaymentIntent(paymentIntent);
 }
 
@@ -80,8 +80,9 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [activeStep, setActiveStep] = React.useState(0);
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [userDetails, setUserDetails] = React.useState({});
     const [paymentIntent, setPaymentIntent] = React.useState<PaymentIntent|null>(null);
+    const [stripe, setStripe] = React.useState<Stripe|null>(null);
+    const [elements, setElements] = React.useState<StripeElements|null>(null);
 
     const priceString = formatter.format(totalBasketCost / 100);
 
@@ -116,13 +117,16 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             break;
         case 1:
-            setUserDetails(userDetails);
             beginPayment({ basket, userDetails, setPaymentIntent });
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             break;
         case 2:
-            alert('TODO');
-            // handlePayment({ paymentIntent, setPaymentIntent });
+            handlePayment({
+                clientSecret: paymentIntent?.client_secret || null,
+                setPaymentIntent,
+                stripe,
+                elements,
+            });
             return;
 
         default: throw new Error('Unknown checkout step');
@@ -167,9 +171,19 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                     errors={errors}
                 />}
 
-                {activeStep === 2 && <StripePaymentFields
-                    userDetails={userDetails}
-                    clientSecret={paymentIntent?.client_secret || null}
+                {activeStep === 2 && !paymentIntent?.client_secret && <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '10em',
+                }}>
+                    <CircularProgress />
+                </Box>}
+
+                {activeStep === 2 && paymentIntent?.client_secret && <StripePaymentFields
+                    clientSecret={paymentIntent.client_secret}
+                    setStripe={setStripe}
+                    setElements={setElements}
                 />}
 
                 <StepControls
