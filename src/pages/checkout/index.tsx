@@ -8,6 +8,7 @@ import React from "react";
 import StripePaymentFields, { createPaymentIntent, handlePayment } from "@/components/stripe";
 import { PaymentIntent, Stripe, StripeElements, StripeError } from "@stripe/stripe-js";
 import { useRouter } from 'next/router';
+import StripeConfirmation from "@/components/stripeConfirmation";
 
 type CheckoutPageProps = {
     allProducts: ProductEntity[];
@@ -218,6 +219,8 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                         setStripe={setStripe}
                         setElements={setElements}
                     />}
+
+                    {activeStep === 2 && <StripeConfirmation />}
 
                     <StepControls
                         basket={basket}
