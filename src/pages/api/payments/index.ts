@@ -16,6 +16,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: STRIPE_API_VERSION,
+    httpClient: Stripe.createFetchHttpClient(),
 });
 
 const calculateAmount = async (basket: BasketType, res: NextApiResponse): Promise<number> => {
