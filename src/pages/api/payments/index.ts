@@ -16,7 +16,6 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: STRIPE_API_VERSION,
-    httpClient: Stripe.createNodeHttpClient(),
 });
 
 const calculateAmount = async (basket: BasketType, res: NextApiResponse): Promise<number> => {
@@ -27,6 +26,7 @@ const calculateAmount = async (basket: BasketType, res: NextApiResponse): Promis
 
         if (!product) {
             res.status(422).json({ error: `Invalid product id: ${productId}` });
+            res.end();
             return 0;
         }
 
