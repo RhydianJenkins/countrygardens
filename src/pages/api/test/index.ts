@@ -1,7 +1,7 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import { NextApiRequest, NextApiResponse } from "next";
 
-async function handler(_req: VercelRequest, res: VercelResponse) {
-    return res.status(200).json({ message: `Hello world!` });
+async function handler(_req: NextApiRequest, res: NextApiResponse) {
+    return res.status(200).end('Hello world!');
 }
 
 export default handler;
