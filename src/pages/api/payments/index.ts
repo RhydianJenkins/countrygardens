@@ -41,24 +41,27 @@ export default async function handler(
 ) {
     if (req.method !== 'POST') {
         res.setHeader('Allow', 'POST');
-        return res.status(405).end('Method Not Allowed');
+        res.status(405).end('Method Not Allowed');
+        res.end();
     }
 
     const basket = req.body.basket;
 
     if (!basket) {
-        return res.status(422).json({ error: 'Missing basket from request body' });
+        res.status(422).json({ error: 'Missing basket from request body' });
+        res.end();
     }
 
     const amount = await calculateAmount(basket, res);
 
     if (amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
-        return res.status(422).json({
+        res.status(422).json({
             error: 'Invalid basket value',
             min: MIN_AMOUNT,
             max: MAX_AMOUNT,
             givenAmount: amount,
         });
+        res.end();
     }
 
     try {
@@ -76,6 +79,6 @@ export default async function handler(
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
-        return res.status(500).json(err);
+        res.status(500).json(err);
     }
 }
