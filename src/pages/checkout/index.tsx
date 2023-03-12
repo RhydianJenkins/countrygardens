@@ -3,7 +3,7 @@ import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
 import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
-import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress } from "@mui/material";
+import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress, Snackbar, Alert } from "@mui/material";
 import React from "react";
 import StripePaymentFields, { createPaymentIntent, handlePayment } from "@/components/stripe";
 import { PaymentIntent, Stripe, StripeElements, StripeError } from "@stripe/stripe-js";
@@ -96,6 +96,8 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [stripe, setStripe] = React.useState<Stripe|null>(null);
     const [elements, setElements] = React.useState<StripeElements|null>(null);
     const [loading, setLoading] = React.useState(false);
+    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const router = useRouter();
 
     const priceString = formatter.format(totalBasketCost / 100);
@@ -131,8 +133,9 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         clearBasket();
     };
 
-    const onPaymentError = (error: StripeError) => {
-        console.error('onPaymentError', error);
+    const onPaymentError = ({ message }: StripeError) => {
+        setSnackbarMessage(message || 'Sorry, something went wrong');
+        setSnackbarOpen(true);
     };
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -164,53 +167,68 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     };
 
     return (
-        <Box
-            paddingLeft={{ xs: '0', md: '10em' }}
-            paddingRight={{ xs: '0', md: '10em' }}
-            maxWidth={{ xs: '100%', md: '80em' }}
-            paddingTop='10em'
-            margin='auto'
-        >
-            <Stepper
-                sx={{
-                    marginBottom: '5em',
-                }}
-                activeStep={activeStep}
-                alternativeLabel
+        <>
+            <Snackbar
+                open={snackbarOpen}
+                onClose={() => setSnackbarOpen(false)}
+                autoHideDuration={6000}
             >
-                {steps.map((label) => {
-                    const stepProps: { completed?: boolean } = {};
-                    const labelProps: { optional?: React.ReactNode; } = {};
+                <Alert
+                    onClose={() => setSnackbarOpen(false)}
+                    severity="error"
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
 
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
-
-            <form noValidate onSubmit={(test) => onSubmit(test)}>
-                {activeStep === 0 && <Basket
-                    allProducts={allProducts}
-                    totalPrice={priceString}
-                />}
-
-                {activeStep === 1 && <StripePaymentFields
-                    clientSecret={paymentIntent?.client_secret || null}
-                    setStripe={setStripe}
-                    setElements={setElements}
-                />}
-
-                <StepControls
-                    basket={basket}
-                    handleBack={handleBack}
+            <Box
+                paddingLeft={{ xs: '0', md: '10em' }}
+                paddingRight={{ xs: '0', md: '10em' }}
+                maxWidth={{ xs: '100%', md: '80em' }}
+                paddingTop='10em'
+                margin='auto'
+            >
+                <Stepper
+                    sx={{
+                        marginBottom: '5em',
+                    }}
                     activeStep={activeStep}
-                    priceString={priceString}
-                    nextButtonLoading={loading}
-                />
-            </form>
-        </Box>
+                    alternativeLabel
+                >
+                    {steps.map((label) => {
+                        const stepProps: { completed?: boolean } = {};
+                        const labelProps: { optional?: React.ReactNode; } = {};
+
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepLabel {...labelProps}>{label}</StepLabel>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+
+                <form noValidate onSubmit={(test) => onSubmit(test)}>
+                    {activeStep === 0 && <Basket
+                        allProducts={allProducts}
+                        totalPrice={priceString}
+                    />}
+
+                    {activeStep === 1 && <StripePaymentFields
+                        clientSecret={paymentIntent?.client_secret || null}
+                        setStripe={setStripe}
+                        setElements={setElements}
+                    />}
+
+                    <StepControls
+                        basket={basket}
+                        handleBack={handleBack}
+                        activeStep={activeStep}
+                        priceString={priceString}
+                        nextButtonLoading={loading}
+                    />
+                </form>
+            </Box>
+        </>
     );
 
 }
