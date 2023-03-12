@@ -6,6 +6,8 @@ import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import React from "react";
+import StripePaymentFields, { createPaymentIntent, handlePayment } from "@/components/stripe";
+import { PaymentIntent } from "@stripe/stripe-js";
 
 type CheckoutPageProps = {
     allProducts: ProductEntity[];
@@ -65,6 +67,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [userDetails, setUserDetails] = React.useState({});
+    const [paymentIntent, setPaymentIntent] = React.useState<PaymentIntent|null>(null);
 
     const priceString = formatter.format(totalBasketCost / 100);
 
@@ -93,13 +96,16 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const onSubmit = (data: CheckoutFieldValues) => {
+    const onSubmit = async (data: CheckoutFieldValues) => {
         switch (activeStep) {
-        case 0: break;
-        case 1: setUserDetails(data); break;
+        case 0:
+            break;
+        case 1:
+            setUserDetails(data);
+            setPaymentIntent(await createPaymentIntent({ basket, data }));
+            break;
         case 2:
-            // TODO create a new stripe payment intent with user and basket details
-            alert('Payment not implemented');
+            handlePayment({ paymentIntent, setPaymentIntent });
             return;
 
         default: throw new Error('Unknown checkout step');
@@ -141,9 +147,15 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                     totalPrice={priceString}
                 />}
 
-                {activeStep === 1 && <CheckoutFields register={register} errors={errors} />}
+                {activeStep === 1 && <CheckoutFields
+                    register={register}
+                    errors={errors}
+                />}
 
-                {activeStep === 2 && <Typography variant='h2'>This will be where you pay</Typography>}
+                {activeStep === 2 && <StripePaymentFields
+                    userDetails={userDetails}
+                    clientSecret={paymentIntent?.client_secret || 'PAYMENT INTENT NOT READY'}
+                />}
 
                 <StepControls
                     handleBack={handleBack}
