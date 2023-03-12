@@ -77,9 +77,11 @@ export default async function handler(
         );
 
         res.status(200).json(paymentIntent);
+        res.end();
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
         res.status(500).json(err);
+        res.end();
     }
 }
