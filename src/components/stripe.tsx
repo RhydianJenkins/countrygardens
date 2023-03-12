@@ -1,5 +1,6 @@
-import { BasketContext, BasketType } from '@/hooks/useBasket';
-import { CardElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { BasketType } from '@/hooks/useBasket';
+import { Box, CircularProgress } from '@mui/material';
+import { Elements, PaymentElement } from '@stripe/react-stripe-js';
 import { PaymentIntent } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import React from 'react';
@@ -18,76 +19,42 @@ export const createPaymentIntent = async ({
     basket: BasketType,
     userDetails: CheckoutFieldValues,
 }): Promise<PaymentIntent> => {
-    const paymentIntent: PaymentIntent = await fetch(
+    const response = await fetch(
         'api/payments',
         {
             method: 'POST',
-            body: {
+            headers: {
+                'Content-Type': "application/json",
+                'accept': 'application/json',
+            },
+            body: JSON.stringify({
                 basket,
                 userDetails,
-            },
+            }),
         }
     );
+
+    const paymentIntent = await response.json();
 
     return paymentIntent;
 };
 
-export async function handlePayment({
-    paymentIntent,
-    setPaymentIntent,
-}: {
-    paymentIntent: PaymentIntent|null,
-    setPaymentIntent: (pi: PaymentIntent) => void,
-}) {
-    const stripe = useStripe();
-    const elements = useElements();
-
-    if (!stripe || !elements) {
-        // Stripe.js has not yet loaded.
-        // TODO Make sure to disable form submission until Stripe.js has loaded.
-
-        // eslint-disable-next-line no-console
-        console.error('Stripe.js has not yet loaded');
-
-        return;
-    }
-
-    if (!paymentIntent) {
-        throw new Error('Missing payment intent');
-    }
-
-    const card = elements.getElement(CardElement);
-    const clientSecret = paymentIntent.client_secret;
-
-    if (!card || !clientSecret) {
-        throw new Error('Missing cardElement or clientSecret');
-    }
-
-    const {
-        paymentIntent: updatedPaymentIntent,
-        error,
-    } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-            payment_method: { card },
-        }
-    );
-
-    if (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-        error.payment_intent && setPaymentIntent(error.payment_intent);
-        return;
-    }
-
-    setPaymentIntent(updatedPaymentIntent);
-}
-
 function StripePaymentFields({ clientSecret }: {
     userDetails: CheckoutFieldValues,
-    clientSecret: string,
+    clientSecret: string|null,
 }) {
-    console.log('clientSecret', clientSecret);
+    if (!clientSecret) {
+        return (
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '10em',
+            }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Elements stripe={stripePromise} options={{ clientSecret }}>

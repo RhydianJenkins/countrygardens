@@ -1,12 +1,12 @@
 import CheckoutFields, { CheckoutFieldValues } from "@/components/checkoutFields";
 import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
-import { BasketContext } from "@/hooks/useBasket";
+import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import React from "react";
-import StripePaymentFields, { createPaymentIntent, handlePayment } from "@/components/stripe";
+import StripePaymentFields, { createPaymentIntent } from "@/components/stripe";
 import { PaymentIntent } from "@stripe/stripe-js";
 
 type CheckoutPageProps = {
@@ -61,6 +61,20 @@ function StepControls({ handleBack, activeStep, priceString }: StepControlsProps
     );
 }
 
+async function beginPayment({
+    basket,
+    userDetails,
+    setPaymentIntent,
+}: {
+    basket: BasketType,
+    userDetails: CheckoutFieldValues,
+    setPaymentIntent: (pi: PaymentIntent) => void,
+}) {
+    const paymentIntent = await createPaymentIntent({ basket, userDetails });
+    console.log('got a payment intent', paymentIntent);
+    setPaymentIntent(paymentIntent);
+}
+
 function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const { basket } = React.useContext(BasketContext);
     const [activeStep, setActiveStep] = React.useState(0);
@@ -96,22 +110,23 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const onSubmit = async (data: CheckoutFieldValues) => {
+    const onSubmit = async (userDetails: CheckoutFieldValues) => {
         switch (activeStep) {
         case 0:
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
             break;
         case 1:
-            setUserDetails(data);
-            setPaymentIntent(await createPaymentIntent({ basket, data }));
+            setUserDetails(userDetails);
+            beginPayment({ basket, userDetails, setPaymentIntent });
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
             break;
         case 2:
-            handlePayment({ paymentIntent, setPaymentIntent });
+            alert('TODO');
+            // handlePayment({ paymentIntent, setPaymentIntent });
             return;
 
         default: throw new Error('Unknown checkout step');
         }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     return (
@@ -154,7 +169,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
 
                 {activeStep === 2 && <StripePaymentFields
                     userDetails={userDetails}
-                    clientSecret={paymentIntent?.client_secret || 'PAYMENT INTENT NOT READY'}
+                    clientSecret={paymentIntent?.client_secret || null}
                 />}
 
                 <StepControls
