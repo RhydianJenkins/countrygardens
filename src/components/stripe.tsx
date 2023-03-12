@@ -45,9 +45,6 @@ export const handlePayment = async ({
     onPaymentComplete: (updatedPaymentIntent: PaymentIntent) => void,
 }) => {
     if (!stripe || !elements) {
-        // Stripe.js has not yet loaded.
-        // TODO Make sure to disable form submission until Stripe.js has loaded.
-        console.log('Stripe.js has not yet loaded.');
         return;
     }
 
@@ -57,7 +54,7 @@ export const handlePayment = async ({
     });
 
     if (error) {
-        console.error('PAYMENT FAIL', error);
+        console.error('PAYMENT FAIL:', error);
         return;
     }
 
