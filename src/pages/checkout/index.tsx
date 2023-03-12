@@ -14,6 +14,7 @@ type CheckoutPageProps = {
 }
 
 type StepControlsProps = {
+    basket: BasketType;
     handleBack: () => void;
     activeStep: number;
     priceString: string;
@@ -33,7 +34,7 @@ const steps = ['Basket', 'Payment', 'Confirmation'];
 function getProgressButtonText({ activeStep, priceString }: {
     activeStep: number,
     priceString: string
-    }) {
+}) {
     if (activeStep === 0) {
         return 'Go to payment';
     }
@@ -45,7 +46,7 @@ function getProgressButtonText({ activeStep, priceString }: {
     return 'Got it';
 }
 
-function StepControls({ handleBack, activeStep, priceString }: StepControlsProps) {
+function StepControls({ basket, handleBack, activeStep, priceString }: StepControlsProps) {
     return (
         <Box sx={{
             display: 'flex',
@@ -65,6 +66,7 @@ function StepControls({ handleBack, activeStep, priceString }: StepControlsProps
             <MuiButton
                 type='submit'
                 variant="contained"
+                disabled={Object.keys(basket).length === 0}
                 sx={{
                     backgroundColor: 'secondary.main',
                 }}
@@ -110,7 +112,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const onPaymentFormComplete = (updatedPaymentIntent: PaymentIntent) => {
+    const onPaymentComplete = (updatedPaymentIntent: PaymentIntent) => {
         setPaymentIntent(updatedPaymentIntent);
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -125,11 +127,9 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
             break;
         case 1:
             await handlePayment({
-                clientSecret: paymentIntent?.client_secret || null,
-                setPaymentIntent,
                 stripe,
                 elements,
-                onComplete: onPaymentFormComplete,
+                onPaymentComplete,
             });
             break;
         case 2:
@@ -179,6 +179,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                 />}
 
                 <StepControls
+                    basket={basket}
                     handleBack={handleBack}
                     activeStep={activeStep}
                     priceString={priceString}

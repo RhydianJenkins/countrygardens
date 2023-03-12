@@ -1,6 +1,6 @@
 import { BasketType } from '@/hooks/useBasket';
 import { Box, CircularProgress, Paper } from '@mui/material';
-import { AddressElement, CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
+import { AddressElement, CardElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { PaymentIntent, Stripe, StripeElements } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import React from 'react';
@@ -36,15 +36,13 @@ export const createPaymentIntent = async ({
 };
 
 export const handlePayment = async ({
-    clientSecret,
     stripe,
     elements,
-    onComplete,
+    onPaymentComplete,
 }: {
-    clientSecret: string|null,
     stripe: Stripe | null,
     elements: StripeElements | null,
-    onComplete: (updatedPaymentIntent: PaymentIntent) => void,
+    onPaymentComplete: (updatedPaymentIntent: PaymentIntent) => void,
 }) => {
     if (!stripe || !elements) {
         // Stripe.js has not yet loaded.
@@ -53,36 +51,17 @@ export const handlePayment = async ({
         return;
     }
 
-    if (!clientSecret) {
-        console.error('No client secret provided');
-        return;
-    }
-
-    const card = elements.getElement(CardElement);
-
-    if (!card) {
-        console.error('No card element found');
-        console.log('elements', elements);
-        console.log('elements.getElement(CardElement)', elements.getElement(CardElement));
-        return;
-    }
-
-    const {
-        paymentIntent: updatedPaymentIntent,
-        error,
-    } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-            payment_method: { card },
-        }
-    );
+    const { paymentIntent, error } = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required',
+    });
 
     if (error) {
         console.error('PAYMENT FAIL', error);
         return;
     }
 
-    onComplete(updatedPaymentIntent);
+    onPaymentComplete(paymentIntent);
 };
 
 function StripePaymentElement({ setStripe, setElements }: {
@@ -106,16 +85,8 @@ function StripePaymentElement({ setStripe, setElements }: {
                     mode: 'google_maps_api',
                     apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
                 },
-                fields: {
-                    phone: 'always',
-                },
-                validation: {
-                    phone: {
-                        required: 'always',
-                    },
-                },
             }} />
-            <CardElement options={{ }}/>
+            <PaymentElement />
         </section>
     );
 }
