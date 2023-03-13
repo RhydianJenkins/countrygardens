@@ -98,6 +98,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [loading, setLoading] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [customerEmail, setCustomerEmail] = React.useState('');
     const router = useRouter();
 
     const priceString = formatter.format(totalBasketCost / 100);
@@ -169,6 +170,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                 elements,
                 onPaymentComplete,
                 onPaymentError,
+                customerEmail,
             });
             setLoading(false);
             break;
@@ -231,6 +233,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                         clientSecret={paymentIntent?.client_secret || null}
                         setStripe={setStripe}
                         setElements={setElements}
+                        setCustomerEmail={setCustomerEmail}
                     />}
 
                     {activeStep === 2 && <StripeConfirmation paymentIntent={paymentIntent} />}

@@ -1,6 +1,6 @@
 import { BasketType } from '@/hooks/useBasket';
 import { Box, CircularProgress, Paper } from '@mui/material';
-import { AddressElement, Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { AddressElement, Elements, LinkAuthenticationElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { PaymentIntent, Stripe, StripeElements, StripeError } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js/pure';
 import React from 'react';
@@ -11,11 +11,32 @@ if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
-export const createPaymentIntent = async ({
-    basket,
-}: {
+type createPaymentIntentProps = {
     basket: BasketType,
-}): Promise<PaymentIntent> => {
+}
+
+type handlePaymentProps = {
+    stripe: Stripe | null,
+    elements: StripeElements | null,
+    onPaymentError: (error: StripeError) => void,
+    onPaymentComplete: (updatedPaymentIntent: PaymentIntent) => void,
+    customerEmail: string,
+}
+
+type stripePaymentElementProps = {
+    setStripe: (stripe: Stripe|null) => void,
+    setElements: (elements: StripeElements|null) => void,
+    setCustomerEmail: (email: string) => void,
+}
+
+type stripePaymentFieldsProps = {
+    clientSecret: string|null,
+    setStripe: (stripe: Stripe|null) => void,
+    setElements: (elements: StripeElements|null) => void,
+    setCustomerEmail: (email: string) => void,
+}
+
+export const createPaymentIntent = async ({ basket }: createPaymentIntentProps): Promise<PaymentIntent> => {
     try {
         const response = await fetch(
             'api/payments',
@@ -51,12 +72,8 @@ export const handlePayment = async ({
     elements,
     onPaymentComplete,
     onPaymentError,
-}: {
-    stripe: Stripe | null,
-    elements: StripeElements | null,
-    onPaymentError: (error: StripeError) => void,
-    onPaymentComplete: (updatedPaymentIntent: PaymentIntent) => void,
-}) => {
+    customerEmail,
+}: handlePaymentProps) => {
     if (!stripe || !elements) {
         return;
     }
@@ -64,6 +81,9 @@ export const handlePayment = async ({
     const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
         redirect: 'if_required',
+        confirmParams: {
+            receipt_email: customerEmail,
+        },
     });
 
     error
@@ -71,10 +91,7 @@ export const handlePayment = async ({
         : onPaymentComplete(paymentIntent);
 };
 
-function StripePaymentElement({ setStripe, setElements }: {
-    setStripe: (stripe: Stripe|null) => void,
-    setElements: (elements: StripeElements|null) => void,
-}) {
+function StripePaymentElement({ setStripe, setElements, setCustomerEmail }: stripePaymentElementProps) {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -85,6 +102,9 @@ function StripePaymentElement({ setStripe, setElements }: {
 
     return (
         <section>
+            <LinkAuthenticationElement onChange={({ value }) => {
+                setCustomerEmail(value.email);
+            }} />
             <AddressElement options={{
                 mode: 'shipping',
                 allowedCountries: ['GB'],
@@ -98,11 +118,7 @@ function StripePaymentElement({ setStripe, setElements }: {
     );
 }
 
-function StripePaymentFields({ clientSecret, setStripe, setElements }: {
-    clientSecret: string|null,
-    setStripe: (stripe: Stripe|null) => void,
-    setElements: (elements: StripeElements|null) => void,
-}) {
+function StripePaymentFields({ clientSecret, setStripe, setElements, setCustomerEmail }: stripePaymentFieldsProps) {
     if (!clientSecret) {
         return (
             <Box sx={{
@@ -124,8 +140,12 @@ function StripePaymentFields({ clientSecret, setStripe, setElements }: {
                 backgroundColor: 'primary.main',
             }}
         >
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <StripePaymentElement setStripe={setStripe} setElements={setElements} />
+            <Elements stripe={stripePromise} options={{ clientSecret, loader: 'auto' }}>
+                <StripePaymentElement
+                    setStripe={setStripe}
+                    setElements={setElements}
+                    setCustomerEmail={setCustomerEmail}
+                />
             </Elements>
         </Paper>
     );

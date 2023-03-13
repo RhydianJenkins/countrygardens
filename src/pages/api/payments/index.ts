@@ -6,7 +6,7 @@ import { getProducts } from '../products';
 
 const MIN_AMOUNT = 50;
 const MAX_AMOUNT = 100000;
-const PAYMENT_METHOD_TYPE = 'card';
+const PAYMENT_METHOD_TYPES = ['link', 'card'];
 const CURRENCY = 'gbp';
 const STRIPE_API_VERSION = '2022-11-15';
 
@@ -68,7 +68,7 @@ export default async function handler(
 
     try {
         const params: Stripe.PaymentIntentCreateParams = {
-            payment_method_types: [PAYMENT_METHOD_TYPE],
+            payment_method_types: PAYMENT_METHOD_TYPES,
             currency: CURRENCY,
             amount,
         };
