@@ -233,7 +233,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                         setElements={setElements}
                     />}
 
-                    {activeStep === 2 && <StripeConfirmation />}
+                    {activeStep === 2 && <StripeConfirmation paymentIntent={paymentIntent} />}
 
                     <StepControls
                         basket={basket}
