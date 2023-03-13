@@ -1,20 +1,24 @@
-import CheckoutFields, { CheckoutFieldValues } from "@/components/checkoutFields";
 import Basket from "@/components/basket";
 import { formatter } from "@/components/product";
-import { BasketContext } from "@/hooks/useBasket";
+import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
-import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress, Snackbar, Alert } from "@mui/material";
 import React from "react";
+import StripePaymentFields, { createPaymentIntent, handlePayment } from "@/components/stripe";
+import { PaymentIntent, Stripe, StripeElements, StripeError } from "@stripe/stripe-js";
+import { useRouter } from 'next/router';
+import StripeConfirmation from "@/components/stripeConfirmation";
 
 type CheckoutPageProps = {
     allProducts: ProductEntity[];
 }
 
 type StepControlsProps = {
+    basket: BasketType;
     handleBack: () => void;
     activeStep: number;
     priceString: string;
+    nextButtonLoading?: boolean;
 }
 
 export const getStaticProps = async () => {
@@ -26,9 +30,33 @@ export const getStaticProps = async () => {
     };
 };
 
-const steps = ['Basket', 'Your Details', 'Payment'];
+const steps = ['Basket', 'Payment', 'Confirmation'];
 
-function StepControls({ handleBack, activeStep, priceString }: StepControlsProps) {
+function getProgressButtonText({ activeStep, priceString }: {
+    activeStep: number,
+    priceString: string
+}) {
+    if (activeStep === 0) {
+        return 'Go to payment';
+    }
+
+    if (activeStep === 1) {
+        return `Pay ${priceString}`;
+    }
+
+    return 'Got it';
+}
+
+function StepControls({ basket, handleBack, activeStep, priceString, nextButtonLoading }: StepControlsProps) {
+    const [nextDisabled, setNextDisabled] = React.useState(false);
+
+    React.useEffect(() => {
+        const basketIsEmpty = Object.keys(basket).length === 0;
+        const isOnPaymentStep = activeStep === 2;
+
+        setNextDisabled(basketIsEmpty && !isOnPaymentStep);
+    }, [basket]);
+
     return (
         <Box sx={{
             display: 'flex',
@@ -36,35 +64,41 @@ function StepControls({ handleBack, activeStep, priceString }: StepControlsProps
             padding: '1em',
             margin: '1em',
         }}>
-            <MuiButton
-                disabled={activeStep === 0}
+            {activeStep === 1 && <MuiButton
                 onClick={handleBack}
                 variant='contained'
             >
-              Back
-            </MuiButton>
+                Back
+            </MuiButton>}
 
             <Box sx={{ flex: '1 1 auto' }} />
 
             <MuiButton
                 type='submit'
                 variant="contained"
+                disabled={nextDisabled || nextButtonLoading}
                 sx={{
                     backgroundColor: 'secondary.main',
                 }}
             >
-                <Typography>{activeStep === steps.length - 1 ? `Pay ${priceString}` : 'Next'}</Typography>
+                {nextButtonLoading && <CircularProgress size={'2em'} sx={{ marginRight: '1em' }}/>}
+                <Typography>{getProgressButtonText({ activeStep, priceString })}</Typography>
             </MuiButton>
         </Box>
     );
 }
 
 function CheckoutPage({ allProducts }: CheckoutPageProps) {
-    const { basket } = React.useContext(BasketContext);
+    const { basket, clearBasket } = React.useContext(BasketContext);
     const [activeStep, setActiveStep] = React.useState(0);
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const [userDetails, setUserDetails] = React.useState({});
+    const [paymentIntent, setPaymentIntent] = React.useState<PaymentIntent|null>(null);
+    const [stripe, setStripe] = React.useState<Stripe|null>(null);
+    const [elements, setElements] = React.useState<StripeElements|null>(null);
+    const [loading, setLoading] = React.useState(false);
+    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const router = useRouter();
 
     const priceString = formatter.format(totalBasketCost / 100);
 
@@ -93,65 +127,124 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const onSubmit = (data: CheckoutFieldValues) => {
+    const fetchNewPaymentIntent = async () => {
+        try {
+            const paymentIntent = await createPaymentIntent({ basket });
+            setPaymentIntent(paymentIntent);
+        } catch (error) {
+            setSnackbarMessage('Sorry, something went wrong');
+            setSnackbarOpen(true);
+
+            // eslint-disable-next-line no-console
+            console.error(error);
+            throw new Error('Failed to create stripe payment intent');
+        }
+    };
+
+    const onPaymentComplete = (updatedPaymentIntent: PaymentIntent) => {
+        setPaymentIntent(updatedPaymentIntent);
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        clearBasket();
+    };
+
+    const onPaymentError = ({ message }: StripeError) => {
+        setSnackbarMessage(message || 'Sorry, something went wrong');
+        setSnackbarOpen(true);
+    };
+
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
         switch (activeStep) {
-        case 0: break;
-        case 1: setUserDetails(data); break;
+        case 0:
+            setLoading(true);
+            fetchNewPaymentIntent();
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            setLoading(false);
+            break;
+        case 1:
+            setLoading(true);
+            await handlePayment({
+                stripe,
+                elements,
+                onPaymentComplete,
+                onPaymentError,
+            });
+            setLoading(false);
+            break;
         case 2:
-            // TODO create a new stripe payment intent with user and basket details
-            alert('Payment not implemented');
+            router.push('/');
             return;
 
         default: throw new Error('Unknown checkout step');
         }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     return (
-        <Box
-            paddingLeft={{ xs: '0', md: '10em' }}
-            paddingRight={{ xs: '0', md: '10em' }}
-            maxWidth={{ xs: '100%', md: '80em' }}
-            paddingTop='10em'
-            margin='auto'
-        >
-            <Stepper
-                sx={{
-                    marginBottom: '5em',
-                }}
-                activeStep={activeStep}
-                alternativeLabel
+        <>
+            <Snackbar
+                open={snackbarOpen}
+                onClose={() => setSnackbarOpen(false)}
+                autoHideDuration={6000}
             >
-                {steps.map((label) => {
-                    const stepProps: { completed?: boolean } = {};
-                    const labelProps: { optional?: React.ReactNode; } = {};
+                <Alert
+                    onClose={() => setSnackbarOpen(false)}
+                    severity="error"
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
 
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
-
-            <form noValidate onSubmit={handleSubmit(onSubmit)}>
-                {activeStep === 0 && <Basket
-                    allProducts={allProducts}
-                    totalPrice={priceString}
-                />}
-
-                {activeStep === 1 && <CheckoutFields register={register} errors={errors} />}
-
-                {activeStep === 2 && <Typography variant='h2'>This will be where you pay</Typography>}
-
-                <StepControls
-                    handleBack={handleBack}
+            <Box
+                paddingLeft={{ xs: '0', md: '10em' }}
+                paddingRight={{ xs: '0', md: '10em' }}
+                maxWidth={{ xs: '100%', md: '80em' }}
+                paddingTop='10em'
+                margin='auto'
+            >
+                <Stepper
+                    sx={{
+                        marginBottom: '5em',
+                    }}
                     activeStep={activeStep}
-                    priceString={priceString}
-                />
-            </form>
-        </Box>
+                    alternativeLabel
+                >
+                    {steps.map((label) => {
+                        const stepProps: { completed?: boolean } = {};
+                        const labelProps: { optional?: React.ReactNode; } = {};
+
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepLabel {...labelProps}>{label}</StepLabel>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+
+                <form noValidate onSubmit={(test) => onSubmit(test)}>
+                    {activeStep === 0 && <Basket
+                        allProducts={allProducts}
+                        totalPrice={priceString}
+                    />}
+
+                    {activeStep === 1 && <StripePaymentFields
+                        clientSecret={paymentIntent?.client_secret || null}
+                        setStripe={setStripe}
+                        setElements={setElements}
+                    />}
+
+                    {activeStep === 2 && <StripeConfirmation />}
+
+                    <StepControls
+                        basket={basket}
+                        handleBack={handleBack}
+                        activeStep={activeStep}
+                        priceString={priceString}
+                        nextButtonLoading={loading}
+                    />
+                </form>
+            </Box>
+        </>
     );
 
 }

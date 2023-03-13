@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Facebook } from '@mui/icons-material';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import NextLink from 'next/link';
 
 export default function Footer() {
@@ -15,7 +15,7 @@ export default function Footer() {
             height: '10em',
         }}>
             <NextLink href="https://www.facebook.com/CountryGardensSelsey" target="_blank">
-                <Facebook />
+                <FacebookIcon />
             </NextLink>
         </Box>
     );

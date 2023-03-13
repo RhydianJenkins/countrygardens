@@ -3,11 +3,13 @@ import React from "react";
 export type BasketType = Record<string, number>;
 export type AddBasketItemType = (id: string) => void;
 export type RemoveBasketItemType = (id: string, number?: number) => void;
-export type BasketReturnType = [ BasketType, AddBasketItemType, RemoveBasketItemType ];
+export type ClearBasketType = () => void;
+export type BasketReturnType = [ BasketType, AddBasketItemType, RemoveBasketItemType, ClearBasketType ];
 export type BasketContextType = {
     basket: BasketType,
     addBasketItem: AddBasketItemType,
-    removeBasketItem: RemoveBasketItemType
+    removeBasketItem: RemoveBasketItemType,
+    clearBasket: ClearBasketType,
 }
 
 export const BasketContext = React.createContext<BasketContextType>({
@@ -19,6 +21,10 @@ export const BasketContext = React.createContext<BasketContextType>({
     removeBasketItem: () => {
         // eslint-disable-next-line no-console
         console.error('removeBasketItem not set');
+    },
+    clearBasket: () => {
+        // eslint-disable-next-line no-console
+        console.error('clearBasket not set');
     },
 });
 
@@ -83,7 +89,15 @@ function useBasket(): BasketReturnType {
         }
     };
 
-    return [basket, addItem, removeItem];
+    const clearBasket = () => {
+        setBasket({});
+
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem('basket', JSON.stringify({}));
+        }
+    };
+
+    return [basket, addItem, removeItem, clearBasket];
 }
 
 export default useBasket;

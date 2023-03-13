@@ -8,11 +8,11 @@ import React from 'react';
 import useBasket, { BasketContext } from '@/hooks/useBasket';
 
 export default function App({ Component, pageProps }: AppProps) {
-    const [basket, addBasketItem, removeBasketItem] = useBasket();
+    const [basket, addBasketItem, removeBasketItem, clearBasket] = useBasket();
 
     return (
         <ThemeProvider theme={theme}>
-            <BasketContext.Provider value={{ basket, addBasketItem, removeBasketItem }}>
+            <BasketContext.Provider value={{ basket, addBasketItem, removeBasketItem, clearBasket }}>
                 <Header />
                 <Component {...pageProps} />
                 <Footer />

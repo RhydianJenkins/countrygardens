@@ -1,11 +1,9 @@
 import { AddBasketItemType, RemoveBasketItemType } from "@/hooks/useBasket";
 import { Avatar, Box, ButtonGroup, Grid, ListItem, ListItemAvatar, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material";
-import {
-    Image as ImageIcon,
-    Add as AddIcon,
-    Remove as RemoveIcon,
-    Delete as DeleteIcon,
-} from '@mui/icons-material';
+import ImageIcon from '@mui/icons-material/Image';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import DeleteIcon from '@mui/icons-material/Delete';
 import NextImage from 'next/image';
 
 export type BasketListItemProps = {

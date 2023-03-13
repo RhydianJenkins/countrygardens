@@ -1,7 +1,11 @@
 import Map from "@/components/map";
-import { AccessTimeFilled, Home, PhoneIphone  } from "@mui/icons-material";
-import { Grid, Tooltip, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import AccessTimeFilled from "@mui/icons-material/AccessTimeFilled";
+import Home from "@mui/icons-material/Home";
+import PhoneIphone from "@mui/icons-material/PhoneIphone";
+import Grid from "@mui/material/Grid";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 function ContactUs() {
     return (
