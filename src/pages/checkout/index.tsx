@@ -1,5 +1,5 @@
 import Basket from "@/components/basket";
-import { formatter } from "@/components/product";
+import { formatUnitAmount } from "@/components/product";
 import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress, Snackbar, Alert } from "@mui/material";
@@ -101,12 +101,12 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [customerEmail, setCustomerEmail] = React.useState('');
     const router = useRouter();
 
-    const priceString = formatter.format(totalBasketCost / 100);
+    const priceString = formatUnitAmount(totalBasketCost);
 
     React.useEffect(() => {
         const basketPrices = Object.entries(basket).map(([id, number]) => {
             const product = allProducts.find(product => product.id === id);
-            const productCost = product?.value || 0;
+            const productCost = product?.price?.unit_amount || 0;
 
             return number * productCost;
         });

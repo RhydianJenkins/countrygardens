@@ -1,6 +1,5 @@
 import { BasketType } from '@/hooks/useBasket';
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import Stripe from 'stripe';
 import { getProducts } from '../products';
 
@@ -22,8 +21,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 const calculateAmount = async (basket: BasketType, res: NextApiResponse): Promise<number> => {
     const allProducts = await getProducts();
 
+    if (!allProducts) {
+        res.status(422).json({ error: 'Missing products' });
+        res.end();
+        return 0;
+    }
+
     const totalCost = Object.entries(basket).reduce((acc, [productId, quantity]) => {
-        const product = allProducts.find((p) => p.id === productId);
+        const product = allProducts.find(({ id }) => id === productId);
 
         if (!product) {
             res.status(422).json({ error: `Invalid product id: ${productId}` });
@@ -31,7 +36,9 @@ const calculateAmount = async (basket: BasketType, res: NextApiResponse): Promis
             return 0;
         }
 
-        return acc + (product.value * quantity);
+        const unitAmount = product.price?.unit_amount || 0;
+
+        return acc + (unitAmount * quantity);
     }, 0);
 
     return totalCost;

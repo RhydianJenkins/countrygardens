@@ -1,10 +1,10 @@
 import NextLink from 'next/link';
-import { formatter } from "@/components/product";
-import { ProductEntity } from '@/pages/api/products';
+import { formatUnitAmount } from "@/components/product";
 import { Box, Typography, Divider, Paper, List } from '@mui/material';
 import { BasketContext } from '@/hooks/useBasket';
 import React from 'react';
 import BasketListItem, { BasketListItemProps } from './basketListItem';
+import { ProductEntity } from '@/pages/api/products';
 
 type BasketPageProps = {
     allProducts: ProductEntity[];
@@ -49,19 +49,20 @@ function Basket({ allProducts, totalPrice }: BasketPageProps) {
             }
 
             const name = product?.name || '';
-            const imageUrl = product?.imageUrl || null;
+            // const imageUrl = product?.images[0] || null;
+            const imageUrl = ''; // TODO
 
-            const individualPrice = product?.value || 0;
-            const priceString = formatter.format(individualPrice / 100);
+            const unitAmount = product?.price?.unit_amount || 0;
+            const priceString = formatUnitAmount(unitAmount);
 
-            const totalPrice = number * individualPrice;
-            const totalPriceString = formatter.format(totalPrice / 100);
+            const totalPrice = number * unitAmount;
+            const totalPriceString = formatUnitAmount(totalPrice);
 
             const newBasketItem = {
                 id,
                 name,
                 number,
-                individualPrice,
+                individualPrice: unitAmount,
                 totalPrice,
                 priceString,
                 totalPriceString,
