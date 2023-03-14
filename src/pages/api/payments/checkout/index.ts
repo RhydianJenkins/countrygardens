@@ -48,7 +48,6 @@ export default async function handler(
             success_url: `${req.headers.origin}/checkout?success=true`,
             cancel_url: `${req.headers.origin}/checkout`,
             expand: ['payment_intent'],
-            automatic_tax: { enabled: true },
             shipping_address_collection: {
                 allowed_countries: ['GB'],
             },
