@@ -1,7 +1,6 @@
 import Cover from "@/components/cover";
 import Products from "@/components/products";
 import ContactUs from "@/components/contactUs";
-import Stripe from "stripe";
 import { getProducts, ProductEntity } from "./api/products";
 
 type HomePageProps = {
