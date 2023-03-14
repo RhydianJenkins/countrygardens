@@ -25,7 +25,7 @@ export const getProducts = async (): Promise<ProductEntity[]> => {
             const price = priceData.find((price) => price.product === product.id) || null;
 
             return { ...product, price };
-        });
+        }).filter((product) => product.active);
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
