@@ -5,6 +5,7 @@ import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress, Snackbar, Alert, AlertColor } from "@mui/material";
 import React from "react";
+import { useRouter } from 'next/router';
 
 type StepControlsProps = {
     actionButtonText?: string,
@@ -89,13 +90,24 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [success, setSuccess] = React.useState(false);
     const [snackbarAlertColor, setSnackbarAlertColor] = React.useState<AlertColor>('success');
-    const [actionButtonText, setActionButtonText] = React.useState('Checkout');
+    const router = useRouter();
     const priceString = formatUnitAmount(totalBasketCost);
+    const [actionButtonText, setActionButtonText] = React.useState('Next');
 
     const showSnackbar = (message: string, alertColor: AlertColor = 'info') => {
         setSnackbarMessage(message);
         setSnackbarAlertColor(alertColor);
         setSnackbarOpen(true);
+    };
+
+    const getActionButtonText = (): string => {
+        const query = new URLSearchParams(window.location.search);
+
+        if (query.get('success') || Object.keys(basket).length === 0) {
+            return 'Back to home';
+        }
+
+        return 'Checkout';
     };
 
     React.useEffect(() => {
@@ -117,7 +129,6 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         const query = new URLSearchParams(window.location.search);
         if (query.get('success')) {
             showSnackbar('Order placed! You will receive an email confirmation.', 'success');
-            setActionButtonText('Place another order');
             setSuccess(true);
             clearBasket();
         }
@@ -125,10 +136,17 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         if (query.get('canceled')) {
             showSnackbar('Order cancelled. You will receive an email confirmation.', 'info');
         }
+
+        setActionButtonText(getActionButtonText());
     }, []);
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if (success || Object.keys(basket).length === 0) {
+            router.push('/');
+            return;
+        }
 
         setLoading(true);
         await createCheckoutSession(basket);
