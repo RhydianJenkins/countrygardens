@@ -46,7 +46,7 @@ export default async function handler(
             line_items: lineItems,
             mode: 'payment',
             success_url: `${req.headers.origin}/checkout?success=true`,
-            cancel_url: `${req.headers.origin}/checkout?cancelled=true`,
+            cancel_url: `${req.headers.origin}/checkout`,
             expand: ['payment_intent'],
             automatic_tax: { enabled: true },
             shipping_address_collection: {
@@ -59,7 +59,7 @@ export default async function handler(
             return;
         }
 
-        res.redirect(303, session.url);
+        res.status(201).json({ url: session.url });
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);

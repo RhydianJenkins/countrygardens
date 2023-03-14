@@ -1,11 +1,13 @@
 import Basket from "@/components/basket";
 import { formatUnitAmount } from "@/components/product";
+import StripeConfirmation from "@/components/stripeConfirmation";
 import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
-import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress, Snackbar, Alert, AlertColor } from "@mui/material";
 import React from "react";
 
 type StepControlsProps = {
+    actionButtonText?: string,
     submitButtonDisabled?: boolean,
     submitButtonLoading?: boolean,
 }
@@ -27,20 +29,25 @@ const steps = ['Basket', 'Payment', 'Confirmation'];
 
 const createCheckoutSession = async (basket: BasketType) => {
     try {
-        await fetch(
+        const response = await fetch(
             'api/payments/checkout',
             {
                 method: 'POST',
-                redirect: 'follow',
                 headers: {
                     'Content-Type': "application/json",
-                    'accept': 'application/json',
                 },
                 body: JSON.stringify({
                     basket,
                 }),
             }
         );
+
+        if (response.status !== 201) {
+            throw new Error('Failed to create checkout session');
+        }
+
+        const { url } = await response.json();
+        window.location.href = url;
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Rejecting promise with error', error);
@@ -49,7 +56,7 @@ const createCheckoutSession = async (basket: BasketType) => {
     }
 };
 
-function StepControls({ submitButtonDisabled, submitButtonLoading }: StepControlsProps) {
+function StepControls({ submitButtonDisabled, submitButtonLoading, actionButtonText = 'Next' }: StepControlsProps) {
     return (
         <Box sx={{
             display: 'flex',
@@ -68,20 +75,28 @@ function StepControls({ submitButtonDisabled, submitButtonLoading }: StepControl
                 }}
             >
                 {submitButtonLoading && <CircularProgress size={'2em'} sx={{ marginRight: '1em' }}/>}
-                <Typography>Next</Typography>
+                <Typography>{actionButtonText}</Typography>
             </MuiButton>
         </Box>
     );
 }
 
 function CheckoutPage({ allProducts }: CheckoutPageProps) {
-    const { basket } = React.useContext(BasketContext);
+    const { basket, clearBasket } = React.useContext(BasketContext);
     const [totalBasketCost, setTotalBasketCost] = React.useState(0);
     const [loading, setLoading] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
-
+    const [success, setSuccess] = React.useState(false);
+    const [snackbarAlertColor, setSnackbarAlertColor] = React.useState<AlertColor>('success');
+    const [actionButtonText, setActionButtonText] = React.useState('Checkout');
     const priceString = formatUnitAmount(totalBasketCost);
+
+    const showSnackbar = (message: string, alertColor: AlertColor = 'info') => {
+        setSnackbarMessage(message);
+        setSnackbarAlertColor(alertColor);
+        setSnackbarOpen(true);
+    };
 
     React.useEffect(() => {
         const basketPrices = Object.entries(basket).map(([id, number]) => {
@@ -101,11 +116,14 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     React.useEffect(() => {
         const query = new URLSearchParams(window.location.search);
         if (query.get('success')) {
-            console.log('Order placed! You will receive an email confirmation.');
+            showSnackbar('Order placed! You will receive an email confirmation.', 'success');
+            setActionButtonText('Place another order');
+            setSuccess(true);
+            clearBasket();
         }
 
         if (query.get('canceled')) {
-            console.log('Order canceled -- continue to shop around and checkout when you’re ready.');
+            showSnackbar('Order cancelled. You will receive an email confirmation.', 'info');
         }
     }, []);
 
@@ -113,7 +131,8 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         event.preventDefault();
 
         setLoading(true);
-        createCheckoutSession(basket).finally(() => setLoading(false));
+        await createCheckoutSession(basket);
+        setLoading(false);
     };
 
     return (
@@ -125,7 +144,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
             >
                 <Alert
                     onClose={() => setSnackbarOpen(false)}
-                    severity="error"
+                    severity={snackbarAlertColor}
                 >
                     {snackbarMessage}
                 </Alert>
@@ -152,9 +171,11 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                         })}
                     </Stepper>
 
-                    <Basket allProducts={allProducts} totalPrice={priceString} />
+                    {success && <StripeConfirmation />}
 
-                    <StepControls submitButtonLoading={loading} />
+                    {!success && <Basket allProducts={allProducts} totalPrice={priceString} />}
+
+                    <StepControls actionButtonText={actionButtonText} submitButtonLoading={loading} />
                 </Box>
             </form>
         </>
