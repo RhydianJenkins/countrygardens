@@ -1,5 +1,5 @@
 import Basket from "@/components/basket";
-import { formatter } from "@/components/product";
+import { formatUnitAmount } from "@/components/product";
 import { BasketContext, BasketType } from "@/hooks/useBasket";
 import { getProducts, ProductEntity } from "@/pages/api/products";
 import { Button as MuiButton, Box, Step, StepLabel, Stepper, Typography, CircularProgress, Snackbar, Alert } from "@mui/material";
@@ -98,14 +98,15 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const [loading, setLoading] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [customerEmail, setCustomerEmail] = React.useState('');
     const router = useRouter();
 
-    const priceString = formatter.format(totalBasketCost / 100);
+    const priceString = formatUnitAmount(totalBasketCost);
 
     React.useEffect(() => {
         const basketPrices = Object.entries(basket).map(([id, number]) => {
             const product = allProducts.find(product => product.id === id);
-            const productCost = product?.value || 0;
+            const productCost = product?.price?.unit_amount || 0;
 
             return number * productCost;
         });
@@ -169,6 +170,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                 elements,
                 onPaymentComplete,
                 onPaymentError,
+                customerEmail,
             });
             setLoading(false);
             break;
@@ -231,9 +233,10 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                         clientSecret={paymentIntent?.client_secret || null}
                         setStripe={setStripe}
                         setElements={setElements}
+                        setCustomerEmail={setCustomerEmail}
                     />}
 
-                    {activeStep === 2 && <StripeConfirmation />}
+                    {activeStep === 2 && <StripeConfirmation paymentIntent={paymentIntent} />}
 
                     <StepControls
                         basket={basket}

@@ -5,18 +5,25 @@ import React from 'react';
 import NextImage from 'next/image';
 import { BasketContext } from '@/hooks/useBasket';
 
-export const formatter = new Intl.NumberFormat('en-EU', {
-    style: 'currency',
-    currency: 'GBP',
-});
+export const formatUnitAmount = (unitAmount: number, currency = 'GBP') => {
+    const formatter = new Intl.NumberFormat('en-EU', {
+        style: 'currency',
+        currency,
+    });
 
-export default function Product({ id, name, value, imageUrl }: ProductEntity) {
+    return formatter.format(unitAmount / 100);
+};
+
+export default function Product({ id, name, price }: ProductEntity) {
     const { addBasketItem } = React.useContext(BasketContext);
     const [open, setOpen] = React.useState(false);
     const [lastAddedProduct, setLastAddedProduct] = React.useState('');
     const [addedToCart, setAddedToCart] = React.useState(false);
 
-    const priceString = formatter.format(value / 100);
+    const unitAmount = price?.unit_amount || 0;
+    const currency = price?.currency;
+    const imageUrl = ''; // TODO
+    const priceString = formatUnitAmount(unitAmount, currency);
 
     const addProductToCart = ({ id, name }: { id: string, name: string }) => {
         setLastAddedProduct(name);
