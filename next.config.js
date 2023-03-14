@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef
-const imageDomain = process.env.POCKETBASE_API_DOMAIN || '127.0.0.1';
+const imageDomain = '127.0.0.1'; // TODO setup image domain for stripe
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
