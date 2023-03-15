@@ -176,7 +176,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
                     paddingTop='10em'
                     margin='auto'
                 >
-                    <Stepper sx={{ marginBottom: '5em' }} alternativeLabel >
+                    <Stepper activeStep={success ? 2 : 0} sx={{ marginBottom: '5em' }} alternativeLabel>
                         {steps.map((label) => {
                             const stepProps: { completed?: boolean } = {};
                             const labelProps: { optional?: React.ReactNode; } = {};
