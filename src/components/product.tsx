@@ -14,7 +14,7 @@ export const formatUnitAmount = (unitAmount: number, currency = 'GBP') => {
     return formatter.format(unitAmount / 100);
 };
 
-export default function Product({ id, name, price }: ProductEntity) {
+export default function Product({ id, name, price, description, images }: ProductEntity) {
     const { addBasketItem } = React.useContext(BasketContext);
     const [open, setOpen] = React.useState(false);
     const [lastAddedProduct, setLastAddedProduct] = React.useState('');
@@ -22,7 +22,7 @@ export default function Product({ id, name, price }: ProductEntity) {
 
     const unitAmount = price?.unit_amount || 0;
     const currency = price?.currency;
-    const imageUrl = ''; // TODO
+    const imageUrl = images[0] ?? '';
     const priceString = formatUnitAmount(unitAmount, currency);
 
     const addProductToCart = ({ id, name }: { id: string, name: string }) => {
@@ -86,6 +86,14 @@ export default function Product({ id, name, price }: ProductEntity) {
                         style={{ objectFit:"cover" }}
                     />
                 </Box>}
+                {description && <Box
+                    sx={{
+                        padding: '1em',
+                        backgroundColor: 'primary.main',
+                        textAlign: 'center',
+                    }}>
+                    <Typography>{description}</Typography>
+                </Box>}
                 <Box
                     sx={{
                         display: 'flex',
@@ -96,8 +104,8 @@ export default function Product({ id, name, price }: ProductEntity) {
                     }}
                 >
                     <span>
-                        <Typography>{name}</Typography>
-                        <Typography>{priceString}</Typography>
+                        <Typography variant='subtitle1'>{name}</Typography>
+                        <Typography variant='subtitle2'>{priceString}</Typography>
                     </span>
                     <Button
                         variant='contained'

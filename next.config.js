@@ -1,11 +1,11 @@
 // eslint-disable-next-line no-undef
-const imageDomain = '127.0.0.1'; // TODO setup image domain for stripe
+const domains = (process.env.IMAGES_DOMAINS || '').split(',');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
     images: {
-        domains: [imageDomain],
+        domains,
     },
     modularizeImports: {
         "@mui/material": {
