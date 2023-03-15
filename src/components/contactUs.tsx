@@ -14,7 +14,9 @@ function ContactUs() {
                 sx={{
                     padding: '1em',
                     marginTop: '10em',
+                    paddingTop: '10em',
                     textAlign: 'center',
+                    backgroundColor: 'primary.main',
                 }}
             >
                 <Typography variant="h3">Contact Us</Typography>
@@ -24,7 +26,8 @@ function ContactUs() {
                 sx={{
                     padding: '1em',
                     textAlign: 'center',
-                    marginBottom: '10em',
+                    paddingBottom: '10em',
+                    backgroundColor: 'primary.main',
                 }}
             >
                 <Grid container spacing={2} justifyContent="center">
