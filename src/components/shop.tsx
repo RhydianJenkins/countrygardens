@@ -3,11 +3,11 @@ import { Box, Typography } from '@mui/material';
 import Product from './product';
 import { ProductEntity } from '@/pages/api/products';
 
-export interface ProductsProps {
+export interface ShopProps {
     products: ProductEntity[];
 }
 
-function Products({ products }: ProductsProps) {
+function Shop({ products }: ShopProps) {
     return (
         <section id='shop'>
             <Box sx={{
@@ -15,7 +15,7 @@ function Products({ products }: ProductsProps) {
                 paddingTop: '10em',
                 textAlign: 'center',
             }}>
-                <Typography variant="h3">Products</Typography>
+                <Typography variant="h3">Shop</Typography>
             </Box>
 
             <Box sx={{
@@ -35,4 +35,4 @@ function Products({ products }: ProductsProps) {
     );
 }
 
-export default Products;
+export default Shop;

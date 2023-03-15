@@ -1,5 +1,5 @@
 import Cover from "@/components/cover";
-import Products from "@/components/products";
+import Shop from "@/components/shop";
 import ContactUs from "@/components/contactUs";
 import { getProducts, ProductEntity } from "./api/products";
 
@@ -21,7 +21,7 @@ function Home({ products }: HomePageProps) {
     return (
         <>
             <Cover />
-            <Products products={products} />
+            <Shop products={products} />
             <ContactUs />
         </>
     );
