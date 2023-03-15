@@ -14,7 +14,62 @@ export const formatUnitAmount = (unitAmount: number, currency = 'GBP') => {
     return formatter.format(unitAmount / 100);
 };
 
-export default function Product({ id, name, price, description, images }: ProductEntity) {
+type AlertSnackbarProps = {
+    lastAddedProduct: string;
+    open: boolean;
+    handleClose: (event: React.SyntheticEvent | Event, reason?: string) => void;
+}
+
+function AlertSnackbar({ lastAddedProduct, open, handleClose }: AlertSnackbarProps) {
+    return (
+        <Snackbar
+            key={lastAddedProduct}
+            open={open}
+            onClose={handleClose}
+            autoHideDuration={6000}
+        >
+            <Alert
+                onClose={handleClose}
+                severity="success"
+                action={
+                    <Button variant="outlined" color='success' size='small'>
+                        <NextLink href='/checkout'>View Basket</NextLink>
+                    </Button>
+                }
+            >
+                {`${lastAddedProduct} added to basket. `}
+            </Alert>
+        </Snackbar>
+    );
+}
+
+type ImageComponentProps = {
+    imageUrl: string;
+    alt: string;
+}
+
+function ImageComponent({ imageUrl, alt }: ImageComponentProps) {
+    return (
+        <Box
+            sx={{
+                flexGrow: 1,
+                height: '20em',
+                overflow: 'hidden',
+                position: 'relative',
+            }}
+        >
+            <NextImage
+                src={imageUrl}
+                alt={alt}
+                width={320}
+                height={320}
+                style={{ objectFit: "cover" }}
+            />
+        </Box>
+    );
+}
+
+function Product({ id, name, price, description, images }: ProductEntity) {
     const { addBasketItem } = React.useContext(BasketContext);
     const [open, setOpen] = React.useState(false);
     const [lastAddedProduct, setLastAddedProduct] = React.useState('');
@@ -42,24 +97,11 @@ export default function Product({ id, name, price, description, images }: Produc
 
     return (
         <>
-            <Snackbar
-                key={lastAddedProduct}
+            <AlertSnackbar
+                lastAddedProduct={lastAddedProduct}
                 open={open}
-                onClose={handleClose}
-                autoHideDuration={6000}
-            >
-                <Alert
-                    onClose={handleClose}
-                    severity="success"
-                    action={
-                        <Button variant="outlined" color='success' size='small'>
-                            <NextLink href='/checkout'>View Basket</NextLink>
-                        </Button>
-                    }
-                >
-                    {`${lastAddedProduct} added to basket. `}
-                </Alert>
-            </Snackbar>
+                handleClose={handleClose}
+            />
 
             <Paper
                 elevation={3}
@@ -70,22 +112,7 @@ export default function Product({ id, name, price, description, images }: Produc
                     height: '100%',
                 }}
             >
-                {imageUrl && <Box
-                    sx={{
-                        flexGrow: 1,
-                        height: '20em',
-                        overflow: 'hidden',
-                        position: 'relative',
-                    }}
-                >
-                    <NextImage
-                        src={imageUrl}
-                        alt={name}
-                        width={320}
-                        height={320}
-                        style={{ objectFit:"cover" }}
-                    />
-                </Box>}
+                {imageUrl && <ImageComponent imageUrl={imageUrl} alt={name} />}
                 {description && <Box
                     sx={{
                         padding: '1em',
@@ -123,3 +150,5 @@ export default function Product({ id, name, price, description, images }: Produc
         </>
     );
 }
+
+export default Product;
