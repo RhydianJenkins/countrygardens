@@ -49,8 +49,7 @@ function Basket({ allProducts, totalPrice }: BasketPageProps) {
             }
 
             const name = product?.name || '';
-            // const imageUrl = product?.images[0] || null;
-            const imageUrl = ''; // TODO
+            const imageUrl = product.images[0] ?? null;
 
             const unitAmount = product?.price?.unit_amount || 0;
             const priceString = formatUnitAmount(unitAmount);
