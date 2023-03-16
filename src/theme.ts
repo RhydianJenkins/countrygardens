@@ -12,7 +12,6 @@ export const globalStyles = {
         backgroundColor: '#F9F7F1',
         maxWidth: '100vw',
         overflowX: 'hidden',
-        fontSize: '62.5%',
     },
     a: {
         textDecoration: 'none',
