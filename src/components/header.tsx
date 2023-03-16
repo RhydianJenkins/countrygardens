@@ -19,6 +19,9 @@ function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [scrollPosition, setScrollPosition] = React.useState(0);
     const router = useRouter();
+    const hasScrolled = scrollPosition > 0;
+    const onHomePage = router.asPath === '/';
+    const textColor = (!hasScrolled && onHomePage) ? "primary.main" : 'common.black';
 
     const handleScroll = () => {
         const position = window.pageYOffset;
@@ -67,7 +70,14 @@ function Header() {
     }, []);
 
     return (
-        <AppBar elevation={scrollPosition > 0 ? 1 : 0} position="fixed">
+        <AppBar
+            elevation={hasScrolled ? 1 : 0}
+            position="fixed"
+            sx={{
+                backgroundColor: hasScrolled ? 'primary.main' : 'transparent',
+                transition: 'background-color 0.2s ease-in-out',
+            }}
+        >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <NextLink href='/'>
@@ -80,13 +90,17 @@ function Header() {
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
                                 textDecoration: 'none',
+                                color: textColor,
                             }}
                         >
                             Country Gardens
                         </Typography>
                     </NextLink>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                    <Box sx={{
+                        flexGrow: 1,
+                        display: { xs: 'flex', md: 'none' },
+                    }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -146,7 +160,7 @@ function Header() {
                                 onClick={() => handleCloseNavMenu(page)}
                                 sx={{ my: 2, display: 'block' }}
                             >
-                                <Typography color="common.black">{page}</Typography>
+                                <Typography color={textColor}>{page}</Typography>
                             </Button>
                         ))}
                     </Box>
