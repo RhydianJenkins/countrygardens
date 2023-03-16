@@ -1,6 +1,25 @@
 import { Roboto } from 'next/font/google';
 import { createTheme } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
+import { CSSObject } from '@emotion/react';
+
+export const globalStyles = {
+    ['*']: {
+        padding: 0,
+        margin: 0,
+    },
+    body: {
+        backgroundColor: '#F9F7F1',
+        maxWidth: '100vw',
+        overflowX: 'hidden',
+        fontSize: '62.5%',
+    },
+    a: {
+        textDecoration: 'none',
+        color: 'inherit',
+        boxSizing: 'border-box',
+    },
+} as CSSObject;
 
 export const roboto = Roboto({
     weight: ['300', '400', '500', '700'],
@@ -12,7 +31,7 @@ export const roboto = Roboto({
 const theme = createTheme({
     palette: {
         background: {
-            paper: '#E3DA7',
+            paper: '#FAFAFA',
         },
         primary: {
             main: '#F9F7F1',
