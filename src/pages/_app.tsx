@@ -5,13 +5,14 @@ import Footer from '@/components/footer';
 import Header from '@/components/header';
 import React from 'react';
 import useBasket, { BasketContext } from '@/hooks/useBasket';
-import { GlobalStyles } from '@mui/material';
+import { CssBaseline, GlobalStyles } from '@mui/material';
 
 export default function App({ Component, pageProps }: AppProps) {
     const [basket, addBasketItem, removeBasketItem, clearBasket] = useBasket();
 
     return (
         <ThemeProvider theme={theme}>
+            <CssBaseline/>
             <GlobalStyles styles={globalStyles} />
             <BasketContext.Provider value={{ basket, addBasketItem, removeBasketItem, clearBasket }}>
                 <Header />

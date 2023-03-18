@@ -23,6 +23,8 @@ function Header() {
     const onHomePage = router.asPath === '/';
     const textColor = (!hasScrolled && onHomePage) ? "primary.main" : 'common.black';
 
+    console.log('textColor', textColor);
+
     const handleScroll = () => {
         const position = window.pageYOffset;
         setScrollPosition(position);
@@ -107,6 +109,7 @@ function Header() {
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleOpenNavMenu}
+                            color={(!hasScrolled && onHomePage) ? "primary" : "default"}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -127,6 +130,7 @@ function Header() {
                             sx={{
                                 display: { xs: 'block', md: 'none' },
                             }}
+                            disableScrollLock
                         >
                             {pages.map((page) => (
                                 <MenuItem
@@ -149,6 +153,7 @@ function Header() {
                             letterSpacing: '.3rem',
                             textDecoration: 'none',
                             textAlign: 'center',
+                            color: textColor,
                         }}
                     >
                         <NextLink href='/'>Country Gardens</NextLink>
@@ -165,7 +170,10 @@ function Header() {
                         ))}
                     </Box>
 
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{
+                        flexGrow: 0,
+                        color: textColor,
+                    }}>
                         <BasketIcon />
                     </Box>
                 </Toolbar>
