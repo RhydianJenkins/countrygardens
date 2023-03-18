@@ -23,8 +23,6 @@ function Header() {
     const onHomePage = router.asPath === '/';
     const textColor = (!hasScrolled && onHomePage) ? "primary.main" : 'common.black';
 
-    console.log('textColor', textColor);
-
     const handleScroll = () => {
         const position = window.pageYOffset;
         setScrollPosition(position);
