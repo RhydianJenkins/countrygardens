@@ -17,13 +17,7 @@ const pages = ['Shop', 'Contact Us'];
 
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [scrollPosition, setScrollPosition] = React.useState(0);
     const router = useRouter();
-
-    const handleScroll = () => {
-        const position = window.pageYOffset;
-        setScrollPosition(position);
-    };
 
     const getElementId = (name: string): string => {
         switch(name) {
@@ -58,16 +52,15 @@ function Header() {
         pageNameClicked && scrollToElement(pageNameClicked);
     };
 
-    React.useEffect(() => {
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
     return (
-        <AppBar elevation={scrollPosition > 0 ? 1 : 0} position="fixed">
+        <AppBar
+            elevation={1}
+            position="fixed"
+            sx={{
+                backgroundColor: 'primary.main',
+                transition: 'background-color 0.2s ease-in-out',
+            }}
+        >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <NextLink href='/'>
@@ -86,7 +79,10 @@ function Header() {
                         </Typography>
                     </NextLink>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                    <Box sx={{
+                        flexGrow: 1,
+                        display: { xs: 'flex', md: 'none' },
+                    }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -113,13 +109,16 @@ function Header() {
                             sx={{
                                 display: { xs: 'block', md: 'none' },
                             }}
+                            disableScrollLock
                         >
                             {pages.map((page) => (
                                 <MenuItem
                                     key={page}
                                     onClick={() => handleCloseNavMenu(page)}
                                 >
-                                    <Typography textAlign="center">{page}</Typography>
+                                    <Typography textAlign="center">
+                                        {page}
+                                    </Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -144,14 +143,17 @@ function Header() {
                             <Button
                                 key={page}
                                 onClick={() => handleCloseNavMenu(page)}
+                                color="inherit"
                                 sx={{ my: 2, display: 'block' }}
                             >
-                                <Typography color="common.black">{page}</Typography>
+                                <Typography>{page}</Typography>
                             </Button>
                         ))}
                     </Box>
 
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{
+                        flexGrow: 0,
+                    }}>
                         <BasketIcon />
                     </Box>
                 </Toolbar>
