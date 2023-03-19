@@ -138,7 +138,7 @@ function BasketListItem({
 
                         <Typography>=</Typography>
 
-                        <Box component="span" sx={{ margin: '1em', width: '3em' }}>
+                        <Box component="span">
                             <Typography>{totalPriceString}</Typography>
                         </Box>
 
