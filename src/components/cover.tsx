@@ -21,6 +21,9 @@ function Info() {
         <Box sx={{
             position: 'relative',
             textAlign: 'center',
+            padding: '2em',
+            border: '.3em solid',
+            borderColor: 'secondary.main',
         }}>
             <Typography
                 variant="h1"
@@ -62,8 +65,7 @@ export default function Cover() {
     return (
         <Box sx={{
             width: '100vw',
-            minHeight: '60em',
-            maxHeight: '80vh',
+            minHeight: '50em',
             spacing: 0,
             justify: 'space-around',
             display: 'flex',
