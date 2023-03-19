@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 
 function ContactUs() {
     return (
-        <section id='contact-us'>
+        <section id='contact'>
             <Box
                 sx={{
                     padding: '1em',
@@ -19,7 +19,7 @@ function ContactUs() {
                     backgroundColor: 'primary.main',
                 }}
             >
-                <Typography variant="h3">Contact Us</Typography>
+                <Typography variant="h3">Contact</Typography>
             </Box>
 
             <Box

@@ -13,7 +13,7 @@ import NextLink from 'next/link';
 import BasketIcon from './basketIcon';
 import { useRouter } from 'next/router';
 
-const pages = ['Shop', 'Contact Us'];
+const pages = ['Shop', 'About', 'Contact'];
 
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -22,7 +22,8 @@ function Header() {
     const getElementId = (name: string): string => {
         switch(name) {
         case 'Shop': { return 'shop'; }
-        case 'Contact Us': { return 'contact-us'; }
+        case 'Contact': { return 'contact'; }
+        case 'About': { return 'about'; }
         default: { return ''; }
         }
     };
