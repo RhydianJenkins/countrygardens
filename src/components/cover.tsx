@@ -70,6 +70,7 @@ export default function Cover() {
             justifyContent: 'center',
             overflow: 'hidden',
             position: 'relative',
+            background: 'pimary.main',
         }}>
             <CoverImage />
             <Info />

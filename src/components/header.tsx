@@ -17,16 +17,7 @@ const pages = ['Shop', 'Contact Us'];
 
 function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [scrollPosition, setScrollPosition] = React.useState(0);
     const router = useRouter();
-    const hasScrolled = scrollPosition > 0;
-    const onHomePage = router.asPath === '/';
-    const textColor = (!hasScrolled && onHomePage) ? "primary.main" : 'common.black';
-
-    const handleScroll = () => {
-        const position = window.pageYOffset;
-        setScrollPosition(position);
-    };
 
     const getElementId = (name: string): string => {
         switch(name) {
@@ -61,20 +52,12 @@ function Header() {
         pageNameClicked && scrollToElement(pageNameClicked);
     };
 
-    React.useEffect(() => {
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
     return (
         <AppBar
-            elevation={hasScrolled ? 1 : 0}
+            elevation={1}
             position="fixed"
             sx={{
-                backgroundColor: hasScrolled ? 'primary.main' : 'transparent',
+                backgroundColor: 'primary.main',
                 transition: 'background-color 0.2s ease-in-out',
             }}
         >
@@ -90,7 +73,6 @@ function Header() {
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
                                 textDecoration: 'none',
-                                color: textColor,
                             }}
                         >
                             Country Gardens
@@ -107,7 +89,6 @@ function Header() {
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleOpenNavMenu}
-                            color={(!hasScrolled && onHomePage) ? "primary" : "default"}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -135,7 +116,9 @@ function Header() {
                                     key={page}
                                     onClick={() => handleCloseNavMenu(page)}
                                 >
-                                    <Typography textAlign="center">{page}</Typography>
+                                    <Typography textAlign="center">
+                                        {page}
+                                    </Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -151,7 +134,6 @@ function Header() {
                             letterSpacing: '.3rem',
                             textDecoration: 'none',
                             textAlign: 'center',
-                            color: textColor,
                         }}
                     >
                         <NextLink href='/'>Country Gardens</NextLink>
@@ -161,16 +143,16 @@ function Header() {
                             <Button
                                 key={page}
                                 onClick={() => handleCloseNavMenu(page)}
+                                color="inherit"
                                 sx={{ my: 2, display: 'block' }}
                             >
-                                <Typography color={textColor}>{page}</Typography>
+                                <Typography>{page}</Typography>
                             </Button>
                         ))}
                     </Box>
 
                     <Box sx={{
                         flexGrow: 0,
-                        color: textColor,
                     }}>
                         <BasketIcon />
                     </Box>

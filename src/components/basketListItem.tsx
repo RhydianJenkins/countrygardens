@@ -83,43 +83,60 @@ function BasketListItem({
                             gap: '0.75em',
                         }}
                     >
-                        <Tooltip title="Remove one">
-                            <ListItemButton
-                                sx={{
-                                    backgroundColor: 'primary.main',
-                                    borderRadius: '50%',
-                                    width: '2em',
-                                    height: '2em',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                                onClick={() => onRemove(id)}
-                            >
-                                <RemoveIcon />
-                            </ListItemButton>
-                        </Tooltip>
+                        <Typography sx={{
+                            display: { md: 'inherit', sm: 'none', xs: 'none' },
+                        }}>
+                            &times;
+                        </Typography>
 
-                        <Box component="span" sx={{ width: '1em', textAlign: 'center' }}>
-                            <Typography>{number}</Typography>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: { md: 'column-reverse', sm: 'row' },
+                                gap: '0.5em',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Tooltip title="Remove one">
+                                <ListItemButton
+                                    sx={{
+                                        backgroundColor: 'primary.main',
+                                        borderRadius: '50%',
+                                        width: '2em',
+                                        height: '2em',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                    onClick={() => onRemove(id)}
+                                >
+                                    <RemoveIcon />
+                                </ListItemButton>
+                            </Tooltip>
+
+                            <Box component="span" sx={{ width: '1em', textAlign: 'center' }}>
+                                <Typography>{number}</Typography>
+                            </Box>
+
+                            <Tooltip title="Add one">
+                                <ListItemButton
+                                    sx={{
+                                        backgroundColor: 'primary.main',
+                                        borderRadius: '50%',
+                                        width: '2em',
+                                        height: '2em',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                    onClick={() => onAdd(id)}
+                                >
+                                    <AddIcon />
+                                </ListItemButton>
+                            </Tooltip>
                         </Box>
 
-                        <Tooltip title="Add one">
-                            <ListItemButton
-                                sx={{
-                                    backgroundColor: 'primary.main',
-                                    borderRadius: '50%',
-                                    width: '2em',
-                                    height: '2em',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                                onClick={() => onAdd(id)}
-                            >
-                                <AddIcon />
-                            </ListItemButton>
-                        </Tooltip>
+                        <Typography>=</Typography>
 
                         <Box component="span" sx={{ margin: '1em', width: '3em' }}>
                             <Typography>{totalPriceString}</Typography>
