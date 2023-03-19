@@ -6,7 +6,7 @@ function CoverImage() {
         <NextImage
             priority
             fill
-            src={'/img/oranges.jpg'}
+            src={'/img/cover.jpg'}
             alt={'Country Gardens'}
             style={{
                 objectFit: 'cover',
@@ -20,13 +20,19 @@ function Info() {
     return (
         <Box sx={{
             position: 'relative',
-            padding: '2em',
             textAlign: 'center',
-            borderRadius: '1em',
-            backgroundColor: 'primary.main',
-            boxShadow: '0 0 1em 0',
         }}>
-            <Typography variant="h1" component="h1">Country Gardens</Typography>
+            <Typography
+                variant="h1"
+                component="h1"
+                color="secondary.main"
+                sx={{
+                    textShadow: "-2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff",
+                    fontWeight: 'bold',
+                }}
+            >
+                Country Gardens
+            </Typography>
         </Box>
     );
 }
