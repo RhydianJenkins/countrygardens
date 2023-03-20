@@ -1,5 +1,6 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { NextRouter, useRouter } from "next/router";
+import Slider from "./slider";
 
 function Info({ router }: { router: NextRouter }) {
     const scrollToShop = async () => {
@@ -21,6 +22,7 @@ function Info({ router }: { router: NextRouter }) {
         <Box
             textAlign='center'
             padding='2em'
+            maxWidth='50em'
             boxShadow={2}
             borderRadius={2}
             sx={{
@@ -36,7 +38,7 @@ function Info({ router }: { router: NextRouter }) {
                 Family greengrocers since 2009
             </Typography>
 
-            <Typography>Small, local, family run grocers serving fruit, veg, and flowers!</Typography>
+            <Typography>Small, local, family run grocers serving fruit, veg, and flowers.</Typography>
 
             <Typography>Dedicated to buying locally when in season, or fresh from market 3 days a week so you can guarantee great produce.</Typography>
 
@@ -55,14 +57,6 @@ function Info({ router }: { router: NextRouter }) {
     );
 }
 
-function PictureSlides() {
-    return (
-        <Box textAlign='center'>
-            <h1>TODO; Some pictures...</h1>
-        </Box>
-    );
-}
-
 function About() {
     const router = useRouter();
 
@@ -76,11 +70,14 @@ function About() {
                 }}
             >
                 <Grid container spacing={2} justifyContent="center">
-                    <Grid item xs={12} md={2}>
+                    <Grid item sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}>
                         <Info router={router} />
                     </Grid>
                     <Grid item xs={12} md={2}>
-                        <PictureSlides />
+                        <Slider />
                     </Grid>
                 </Grid>
             </Box>
