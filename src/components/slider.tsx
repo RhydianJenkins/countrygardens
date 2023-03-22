@@ -6,16 +6,20 @@ import { Box } from "@mui/material";
 
 const images = [
     { image: "/img/slideshow/fruit_10.jpeg", alt: "image1" },
+    { image: "/img/slideshow/fruit_9.jpeg", alt: "image2" },
 ];
 
 const imagesList = images.map((image, index) => {
     return (
         <Box
+            className="keen-slider__slide"
             position='relative'
+            height='512px'
             key={index}
         >
             <NextImage
                 fill
+                style={{ objectFit: "contain" }}
                 src={image.image}
                 alt={image.alt}
             />
@@ -59,28 +63,26 @@ function Slider() {
 
     return (
         <>
-            <div className="navigation-wrapper">
-                <div ref={sliderRef} className="keen-slider">
-                    {imagesList}
-                </div>
-
-                {loaded && instanceRef.current && (
-                    <>
-                        <Arrow
-                            left
-                            onClick={(e: any) =>
-                                e.stopPropagation() || instanceRef.current?.prev()
-                            }
-                        />
-
-                        <Arrow
-                            onClick={(e: any) =>
-                                e.stopPropagation() || instanceRef.current?.next()
-                            }
-                        />
-                    </>
-                )}
+            <div ref={sliderRef} className="keen-slider">
+                {imagesList}
             </div>
+
+            {loaded && instanceRef.current && (
+                <>
+                    <Arrow
+                        left
+                        onClick={(e: any) =>
+                            e.stopPropagation() || instanceRef.current?.prev()
+                        }
+                    />
+
+                    <Arrow
+                        onClick={(e: any) =>
+                            e.stopPropagation() || instanceRef.current?.next()
+                        }
+                    />
+                </>
+            )}
 
             {loaded && instanceRef.current && (
                 <div className="dots">
