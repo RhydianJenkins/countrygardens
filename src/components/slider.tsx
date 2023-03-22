@@ -3,6 +3,7 @@ import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import NextImage from "next/image";
 import { Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 const SLIDER_AUTOPLAY_INTERVAL = 5000;
 const SLIDESHOW_PUBLIC_DIR = '/img/slideshow';
@@ -16,15 +17,19 @@ const imageNames = [
 const imagesList = imageNames.map((imageName, index) => {
     return (
         <Box
+            key={index}
             className="keen-slider__slide"
             height='512px'
-            key={index}
             overflow="hidden"
             borderRadius=".25em"
+            sx={{
+            }}
         >
             <NextImage
                 fill
-                style={{ objectFit: "cover" }}
+                style={{
+                    objectFit: "cover",
+                }}
                 src={`${SLIDESHOW_PUBLIC_DIR}/${imageName}`}
                 alt={SLIDESHOW_IMAGE_ALT}
             />
@@ -58,14 +63,12 @@ function Arrow({ left, onClick }: ArrowProps ) {
 }
 
 function Slider() {
-    const [currentSlide, setCurrentSlide] = React.useState(0);
+    const theme = useTheme();
+
     const [loaded, setLoaded] = React.useState(false);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
         initial: 0,
         loop: true,
-        slideChanged(slider) {
-            setCurrentSlide(slider.track.details.rel);
-        },
         created() {
             setLoaded(true);
         },
@@ -120,6 +123,7 @@ function Slider() {
                     top: 255,
                     display: "flex",
                     justifyContent: "space-between",
+                    fill: theme.palette.primary.light,
                 }}>
                     <Arrow
                         left

@@ -69,14 +69,11 @@ function About() {
                     backgroundColor: 'primary.main',
                 }}
             >
-                <Grid container spacing={2} justifyContent="center">
-                    <Grid item sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                    }}>
+                <Grid container justifyContent="center" spacing={4}>
+                    <Grid item xs={12} md={6} lg={4} xl={3}>
                         <Info router={router} />
                     </Grid>
-                    <Grid item xs={12} md={2}>
+                    <Grid item xs={12} md={6} lg={4} xl={3}>
                         <Slider />
                     </Grid>
                 </Grid>
