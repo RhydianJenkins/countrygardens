@@ -22,8 +22,6 @@ const imagesList = imageNames.map((imageName, index) => {
             height='512px'
             overflow="hidden"
             borderRadius=".25em"
-            sx={{
-            }}
         >
             <NextImage
                 fill
