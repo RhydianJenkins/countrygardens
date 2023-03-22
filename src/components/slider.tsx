@@ -4,44 +4,53 @@ import "keen-slider/keen-slider.min.css";
 import NextImage from "next/image";
 import { Box } from "@mui/material";
 
-const images = [
-    { image: "/img/slideshow/fruit_10.jpeg", alt: "image1" },
-    { image: "/img/slideshow/fruit_9.jpeg", alt: "image2" },
+const SLIDER_AUTOPLAY_INTERVAL = 5000;
+const SLIDESHOW_PUBLIC_DIR = '/img/slideshow';
+const SLIDESHOW_IMAGE_ALT = 'Fruit and veg';
+
+const imageNames = [
+    'fruit_10.jpeg',
+    'fruit_9.jpeg',
 ];
 
-const imagesList = images.map((image, index) => {
+const imagesList = imageNames.map((imageName, index) => {
     return (
         <Box
             className="keen-slider__slide"
-            position='relative'
             height='512px'
             key={index}
+            overflow="hidden"
+            borderRadius=".25em"
         >
             <NextImage
                 fill
-                style={{ objectFit: "contain" }}
-                src={image.image}
-                alt={image.alt}
+                style={{ objectFit: "cover" }}
+                src={`${SLIDESHOW_PUBLIC_DIR}/${imageName}`}
+                alt={SLIDESHOW_IMAGE_ALT}
             />
         </Box>
     );
 });
 
-function Arrow(props: {
+type ArrowProps = {
   left?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick: (e: any) => void
-}) {
+}
+
+function Arrow({ left, onClick }: ArrowProps ) {
     return (
         <svg
-            onClick={props.onClick}
-            className={`arrow ${props.left ? "arrow--left" : "arrow--right"}`}
+            onClick={onClick}
+            className={`arrow arrow--${left ? "left" : "right"}`}
+            cursor="pointer"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
         >
-            {props.left && (
+            {left && (
                 <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
             )}
-            {!props.left && (
+            {!left && (
                 <path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z" />
             )}
         </svg>
@@ -53,53 +62,82 @@ function Slider() {
     const [loaded, setLoaded] = React.useState(false);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
         initial: 0,
+        loop: true,
         slideChanged(slider) {
             setCurrentSlide(slider.track.details.rel);
         },
         created() {
             setLoaded(true);
         },
-    });
+    }, [
+        (slider) => {
+            let timeout: ReturnType<typeof setTimeout>;
+            let mouseOver = false;
+
+            function clearNextTimeout() {
+                clearTimeout(timeout);
+            }
+
+            function nextTimeout() {
+                clearTimeout(timeout);
+                if (mouseOver) return;
+                timeout = setTimeout(() => {
+                    slider.next();
+                }, SLIDER_AUTOPLAY_INTERVAL);
+            }
+
+            slider.on('created', () => {
+                slider.container.addEventListener('mouseover', () => {
+                    mouseOver = true;
+                    clearNextTimeout();
+                });
+                slider.container.addEventListener('mouseout', () => {
+                    mouseOver = false;
+                    nextTimeout();
+                });
+                nextTimeout();
+            });
+
+            slider.on('dragStarted', clearNextTimeout);
+            slider.on('animationEnded', nextTimeout);
+            slider.on('updated', nextTimeout);
+        },
+    ]);
 
     return (
-        <>
+        <Box sx={{
+            position: "relative",
+        }}>
             <div ref={sliderRef} className="keen-slider">
                 {imagesList}
             </div>
 
             {loaded && instanceRef.current && (
-                <>
+                <Box sx={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "2em",
+                    top: 255,
+                    display: "flex",
+                    justifyContent: "space-between",
+                }}>
                     <Arrow
                         left
-                        onClick={(e: any) =>
-                            e.stopPropagation() || instanceRef.current?.prev()
-                        }
+                        onClick={(e: Event) => {
+                            e.stopPropagation();
+                            instanceRef.current?.prev();
+                        }}
                     />
 
                     <Arrow
-                        onClick={(e: any) =>
-                            e.stopPropagation() || instanceRef.current?.next()
-                        }
+                        onClick={(e: Event) => {
+                            e.stopPropagation();
+                            instanceRef.current?.next();
+                        }}
                     />
-                </>
+                </Box>
             )}
-
-            {loaded && instanceRef.current && (
-                <div className="dots">
-                    {images.map((_image, idx) => {
-                        return (
-                            <button
-                                key={idx}
-                                onClick={() => {
-                                    instanceRef.current?.moveToIdx(idx);
-                                }}
-                                className={"dot" + (currentSlide === idx ? " active" : "")}
-                            ></button>
-                        );
-                    })}
-                </div>
-            )}
-        </>
+        </Box>
     );
 }
 
