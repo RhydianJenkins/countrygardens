@@ -6,12 +6,19 @@ import Header from '@/components/header';
 import React from 'react';
 import useBasket, { BasketContext } from '@/hooks/useBasket';
 import { CssBaseline, GlobalStyles } from '@mui/material';
+import Head from 'next/head';
 
 export default function App({ Component, pageProps }: AppProps) {
     const [basket, addBasketItem, removeBasketItem, clearBasket] = useBasket();
 
     return (
         <ThemeProvider theme={theme}>
+            <Head>
+                <title>Country Gardens</title>
+                <meta property="og:title" content="Country Gardens" key="title" />
+                <meta name="description" content="Local green grocers based in Selsey Chichister" />
+                <meta name="keywords" content="fruit, veg, shop, ecommerce, country, gardens, selsey, chichister, box" />
+            </Head>
             <CssBaseline/>
             <GlobalStyles styles={globalStyles} />
             <BasketContext.Provider value={{ basket, addBasketItem, removeBasketItem, clearBasket }}>
