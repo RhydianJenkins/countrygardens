@@ -7,6 +7,7 @@ import React from 'react';
 import useBasket, { BasketContext } from '@/hooks/useBasket';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import Head from 'next/head';
+import PageLoadIndicator from '@/components/pageLoadIndicator';
 
 export default function App({ Component, pageProps }: AppProps) {
     const [basket, addBasketItem, removeBasketItem, clearBasket] = useBasket();
@@ -22,6 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <CssBaseline/>
             <GlobalStyles styles={globalStyles} />
             <BasketContext.Provider value={{ basket, addBasketItem, removeBasketItem, clearBasket }}>
+                <PageLoadIndicator />
                 <Header />
                 <Component {...pageProps} />
                 <Footer />
