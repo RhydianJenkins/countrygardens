@@ -19,6 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <meta property="og:title" content="Country Gardens" key="title" />
                 <meta name="description" content="Local green grocers based in Selsey Chichister" />
                 <meta name="keywords" content="fruit, veg, shop, ecommerce, country, gardens, selsey, chichister, box" />
+                <meta name="google-site-verification" content="gCqt9VI7riJifR4L3b0wBhMk6AyNXjkRwcFKBW40Mso" />
             </Head>
             <CssBaseline/>
             <GlobalStyles styles={globalStyles} />
