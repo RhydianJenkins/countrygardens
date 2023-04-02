@@ -84,15 +84,14 @@ function StepControls({ submitButtonDisabled, submitButtonLoading, actionButtonT
 
 function CheckoutPage({ allProducts }: CheckoutPageProps) {
     const { basket, clearBasket } = React.useContext(BasketContext);
-    const [totalBasketCost, setTotalBasketCost] = React.useState(0);
     const [loading, setLoading] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [success, setSuccess] = React.useState(false);
     const [snackbarAlertColor, setSnackbarAlertColor] = React.useState<AlertColor>('success');
     const router = useRouter();
-    const priceString = formatUnitAmount(totalBasketCost);
     const [actionButtonText, setActionButtonText] = React.useState('Next');
+    const [totalPriceString, setTotalPriceString] = React.useState('INITIAL');
 
     const showSnackbar = (message: string, alertColor: AlertColor = 'info') => {
         setSnackbarMessage(message);
@@ -100,17 +99,17 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
         setSnackbarOpen(true);
     };
 
-    const getActionButtonText = (): string => {
+    const getActionButtonText = (price: string): string => {
         const query = new URLSearchParams(window.location.search);
 
         if (query.get('success') || Object.keys(basket).length === 0) {
             return 'Back to home';
         }
 
-        return 'Checkout';
+        return `Checkout (${price})`;
     };
 
-    React.useEffect(() => {
+    const refreshBasket = () => {
         const basketPrices = Object.entries(basket).map(([id, number]) => {
             const product = allProducts.find(product => product.id === id);
             const productCost = product?.price?.unit_amount || 0;
@@ -122,7 +121,13 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
             return acc + cur;
         }, 0);
 
-        setTotalBasketCost(newTotalBasketCost);
+        const totalPriceString = formatUnitAmount(newTotalBasketCost);
+        setTotalPriceString(totalPriceString);
+        setActionButtonText(getActionButtonText(totalPriceString));
+    };
+
+    React.useEffect(() => {
+        refreshBasket();
     }, [basket]);
 
     React.useEffect(() => {
@@ -137,7 +142,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
             showSnackbar('Order cancelled. You will receive an email confirmation.', 'info');
         }
 
-        setActionButtonText(getActionButtonText());
+        refreshBasket();
     }, []);
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -191,7 +196,7 @@ function CheckoutPage({ allProducts }: CheckoutPageProps) {
 
                     {success && <StripeConfirmation />}
 
-                    {!success && <Basket allProducts={allProducts} totalPrice={priceString} />}
+                    {!success && <Basket allProducts={allProducts} totalPrice={totalPriceString} />}
 
                     <StepControls actionButtonText={actionButtonText} submitButtonLoading={loading} />
                 </Box>

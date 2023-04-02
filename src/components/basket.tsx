@@ -112,7 +112,6 @@ function Basket({ allProducts, totalPrice }: BasketPageProps) {
                         ))}
                     </List>
                 </Paper>
-                <Typography variant='subtitle1' textAlign='center' margin='5em'>Subtotal: {totalPrice}</Typography>
             </Box>
         </Box>
     );
