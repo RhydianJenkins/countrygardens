@@ -8,7 +8,7 @@ function CoverImage() {
         <NextImage
             priority
             fill
-            src={'/img/cover.jpg'}
+            src={'/static/img/cover.jpg'}
             alt={'Country Gardens'}
             style={{
                 objectFit: 'cover',

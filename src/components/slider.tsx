@@ -6,11 +6,18 @@ import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 const SLIDER_AUTOPLAY_INTERVAL = 5000;
-const SLIDESHOW_PUBLIC_DIR = '/img/slideshow';
+const SLIDESHOW_PUBLIC_DIR = '/static/img/slideshow';
 const SLIDESHOW_IMAGE_ALT = 'Fruit and veg';
 
 const imageNames = [
     'fruit_10.jpeg',
+    'fruit_11.jpeg',
+    'fruit_3.jpeg',
+    'fruit_4.jpeg',
+    'fruit_5.jpeg',
+    'fruit_6.jpeg',
+    'fruit_7.jpeg',
+    'fruit_8.jpeg',
     'fruit_9.jpeg',
 ];
 
